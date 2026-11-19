@@ -220,7 +220,7 @@
       border: 1px solid var(--negro);
     }
 
-    /* TARJETAS DE LOS 2 PRODUCTOS */
+    /* TARJETAS DE PRODUCTOS */
     .product-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -261,18 +261,6 @@
       transform: scale(1.03);
     }
 
-    .product-tag {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      background: var(--blanco);
-      color: var(--negro);
-      font-size: 9px;
-      letter-spacing: 1.5px;
-      padding: 4px 8px;
-      text-transform: uppercase;
-    }
-
     .product-title {
       font-size: 13px;
       font-weight: 500;
@@ -307,14 +295,14 @@
       color: var(--blanco);
     }
 
-    /* MODAL DETALLE DEL PRODUCTO */
+    /* MODAL DETALLE MINIMALISTA */
     .product-modal {
       position: fixed;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
       width: 92%;
-      max-width: 780px;
+      max-width: 720px;
       max-height: 90vh;
       background: var(--blanco);
       z-index: 250;
@@ -328,11 +316,11 @@
       position: absolute;
       top: 12px;
       right: 12px;
-      width: 34px;
-      height: 34px;
+      width: 32px;
+      height: 32px;
       background: var(--blanco);
       border: 1px solid var(--negro);
-      font-size: 16px;
+      font-size: 15px;
       cursor: pointer;
       z-index: 10;
     }
@@ -345,11 +333,12 @@
       .modal-body { grid-template-columns: 1fr 1fr; }
     }
 
-    /* CARRUSEL DENTRO DEL MODAL */
+    /* CARRUSEL AUTOMÁTICO DENTRO DEL MODAL */
     .modal-gallery {
       position: relative;
       background: var(--gris-piedra);
       aspect-ratio: 3/4;
+      overflow: hidden;
     }
     .modal-gallery img {
       width: 100%;
@@ -357,20 +346,6 @@
       object-fit: cover;
       display: block;
     }
-
-    .gallery-arrow {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      background: rgba(255, 255, 255, 0.88);
-      border: 1px solid var(--negro);
-      width: 34px;
-      height: 34px;
-      cursor: pointer;
-      font-size: 14px;
-    }
-    .gallery-arrow.prev { left: 10px; }
-    .gallery-arrow.next { right: 10px; }
 
     .gallery-thumbs {
       position: absolute;
@@ -381,8 +356,8 @@
       gap: 8px;
     }
     .thumb-dot {
-      width: 10px;
-      height: 10px;
+      width: 8px;
+      height: 8px;
       border-radius: 50%;
       border: 1px solid var(--negro);
       background: var(--blanco);
@@ -390,52 +365,38 @@
     }
     .thumb-dot.active { background: var(--negro); }
 
-    /* INFO DEL MODAL */
+    /* INFO MINIMALISTA DEL MODAL */
     .modal-details {
-      padding: 26px 22px;
+      padding: 28px 24px;
       display: flex;
       flex-direction: column;
       justify-content: center;
     }
     .modal-details h2 {
-      font-size: 20px;
+      font-size: 19px;
       font-weight: 500;
       letter-spacing: 1px;
       margin-bottom: 6px;
     }
     .modal-price {
-      font-size: 18px;
-      margin-bottom: 14px;
-    }
-    .modal-desc {
-      font-size: 13px;
-      line-height: 1.6;
-      color: #333;
-      margin-bottom: 16px;
+      font-size: 16px;
+      margin-bottom: 12px;
     }
     .modal-meta {
       font-size: 12px;
-      margin-bottom: 6px;
-      letter-spacing: 0.5px;
-    }
-    .order-note {
-      display: inline-block;
-      background: var(--blush-beige);
-      padding: 6px 10px;
-      font-size: 11px;
-      letter-spacing: 1px;
-      margin: 8px 0 18px;
+      color: #555;
+      margin-bottom: 22px;
     }
 
     .size-grid {
       display: flex;
       gap: 8px;
-      margin-bottom: 22px;
+      margin-bottom: 24px;
       flex-wrap: wrap;
     }
     .size-btn {
       min-width: 42px;
-      height: 40px;
+      height: 38px;
       border: 1px solid var(--negro);
       background: var(--blanco);
       font-size: 11px;
@@ -578,7 +539,7 @@
     </div>
   </section>
 
-  <!-- CATÁLOGO CON LOS 2 PRODUCTOS -->
+  <!-- CATÁLOGO -->
   <section class="section" id="destacados">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
       <h3 class="section-title" id="catalogTitle" style="margin-bottom:0;">Catálogo</h3>
@@ -588,7 +549,6 @@
     <div class="product-grid" id="productGrid">
       <div class="product-card" data-category="tops" onclick="openProductModal(0)">
         <div class="product-img-wrap">
-          <span class="product-tag">Bajo Pedido</span>
           <img src="Dynamic High Neck Halter Bra color Midnight Black (2).png" alt="Dynamic High Neck Halter Bra">
         </div>
         <div class="product-title">Dynamic High Neck Halter Bra</div>
@@ -599,7 +559,6 @@
 
       <div class="product-card" data-category="enterizos" onclick="openProductModal(1)">
         <div class="product-img-wrap">
-          <span class="product-tag">Bajo Pedido</span>
           <img src="65.png" alt="Impact Short Sleeve One Piece">
         </div>
         <div class="product-title">Impact Short Sleeve One Piece</div>
@@ -610,14 +569,12 @@
     </div>
   </section>
 
-  <!-- MODAL DETALLE DE PRODUCTO -->
+  <!-- MODAL DETALLE MINIMALISTA -->
   <div class="product-modal" id="productModal">
     <button class="modal-close" onclick="closeAll()">✕</button>
     <div class="modal-body">
       <div class="modal-gallery">
         <img id="modalImg" src="" alt="Vista del producto">
-        <button class="gallery-arrow prev" onclick="changeModalPhoto(-1)">‹</button>
-        <button class="gallery-arrow next" onclick="changeModalPhoto(1)">›</button>
         <div class="gallery-thumbs">
           <button class="thumb-dot active" id="thumb0" onclick="setModalPhoto(0)"></button>
           <button class="thumb-dot" id="thumb1" onclick="setModalPhoto(1)"></button>
@@ -627,11 +584,8 @@
       <div class="modal-details">
         <h2 id="modalTitle">Nombre del Producto</h2>
         <div class="modal-price" id="modalPrice">$0.00</div>
-        <p class="modal-desc" id="modalDesc">Descripción del producto.</p>
-        <div class="modal-meta"><strong>Color:</strong> <span id="modalColor"></span></div>
-        <div class="order-note">Tallas disponibles bajo pedido</div>
+        <div class="modal-meta">Color: <span id="modalColor"></span></div>
 
-        <div style="font-size:11px; letter-spacing:2px; margin-bottom:8px; text-transform:uppercase;">Elige tu talla:</div>
         <div class="size-grid" id="modalSizes">
           <button class="size-btn" onclick="selectSize(this)">XS</button>
           <button class="size-btn selected" onclick="selectSize(this)">S</button>
@@ -662,7 +616,7 @@
         <span>TOTAL</span>
         <strong id="cartTotal">$0.00</strong>
       </div>
-      <div class="copy-feedback" id="copyFeedback">¡Foto del pedido lista!</div>
+      <div class="copy-feedback" id="copyFeedback">¡Pedido copiado! Pégalo en el chat de Instagram.</div>
       <button class="btn-instagram" onclick="orderViaInstagram()">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
           <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
@@ -684,7 +638,6 @@
         price: 25,
         color: "Midnight Black",
         category: "tops",
-        description: "Top deportivo de cuello alto con tiras cruzadas estilo halter y espalda descubierta. Tejido suave de alta elasticidad que brinda soporte y estiliza la silueta.",
         images: [
           "Dynamic High Neck Halter Bra color Midnight Black (2).png",
           "Dynamic High Neck Halter Bra color Midnight Black.png"
@@ -695,7 +648,6 @@
         price: 55,
         color: "Ivory",
         category: "enterizos",
-        description: "Enterizo corto de manga corta con escote pronunciado en la espalda y broche metálico posterior. Ajuste esculpido sin costuras frontales para máxima comodidad.",
         images: [
           "65.png",
           "66.png"
@@ -707,6 +659,7 @@
     let currentSlide = 0;
     let activeProductIndex = 0;
     let activePhotoIndex = 0;
+    let modalCarouselTimer = null;
 
     function openMenu() {
       closeAll();
@@ -720,7 +673,25 @@
       document.getElementById('overlay').classList.add('active');
     }
 
+    function stopModalCarousel() {
+      if (modalCarouselTimer) {
+        clearInterval(modalCarouselTimer);
+        modalCarouselTimer = null;
+      }
+    }
+
+    function startModalCarousel() {
+      stopModalCarousel();
+      modalCarouselTimer = setInterval(() => {
+        const p = products[activeProductIndex];
+        if (!p || !p.images || p.images.length < 2) return;
+        const nextIdx = (activePhotoIndex + 1) % p.images.length;
+        setModalPhoto(nextIdx);
+      }, 2500);
+    }
+
     function closeAll() {
+      stopModalCarousel();
       document.getElementById('menuDrawer').classList.remove('active');
       document.getElementById('cartDrawer').classList.remove('active');
       document.getElementById('productModal').classList.remove('active');
@@ -760,19 +731,21 @@
     }
 
     function openProductModal(index) {
+      stopModalCarousel();
       activeProductIndex = index;
       activePhotoIndex = 0;
       const p = products[index];
 
       document.getElementById('modalTitle').textContent = p.name;
       document.getElementById('modalPrice').textContent = '$' + p.price.toFixed(2);
-      document.getElementById('modalDesc').textContent = p.description;
       document.getElementById('modalColor').textContent = p.color;
 
       setModalPhoto(0);
 
       document.getElementById('productModal').classList.add('active');
       document.getElementById('overlay').classList.add('active');
+
+      startModalCarousel();
     }
 
     function setModalPhoto(photoIdx) {
@@ -782,12 +755,6 @@
 
       document.getElementById('thumb0').classList.toggle('active', photoIdx === 0);
       document.getElementById('thumb1').classList.toggle('active', photoIdx === 1);
-    }
-
-    function changeModalPhoto(step) {
-      const totalPhotos = products[activeProductIndex].images.length;
-      const nextIdx = (activePhotoIndex + step + totalPhotos) % totalPhotos;
-      setModalPhoto(nextIdx);
     }
 
     function selectSize(btn) {
@@ -804,7 +771,6 @@
         color: p.color,
         size: size,
         price: p.price,
-        image: p.images && p.images[0] ? p.images[0] : "",
         cantidad: 1
       });
 
@@ -858,93 +824,32 @@
         return `${item.name} (${item.color}) Talla ${item.size} x ${cant} - $${subtotal.toFixed(2)}`;
       });
 
-      return {
-        text: `Hola KLO! Quiero pedir:\n${items.join('\n')}\nTOTAL: $${total.toFixed(2)}`,
-        items: items,
-        total: total
-      };
+      return `Hola KLO! Quiero pedir:\n${items.join('\n')}\nTOTAL: $${total.toFixed(2)}`;
     }
 
-    function loadImageElement(src) {
-      return new Promise(resolve => {
-        if (!src) return resolve(null);
-        const img = new Image();
-        img.crossOrigin = "anonymous";
-        img.onload = () => resolve(img);
-        img.onerror = () => resolve(null);
-        img.src = src;
-      });
+    function copiarAlPortapapelesFallback(texto) {
+      try {
+        const area = document.createElement("textarea");
+        area.value = texto;
+        area.setAttribute("readonly", "");
+        area.style.position = "fixed";
+        area.style.top = "-9999px";
+        document.body.appendChild(area);
+        area.select();
+        area.setSelectionRange(0, area.value.length);
+        document.execCommand("copy");
+        area.remove();
+      } catch (e) {}
     }
 
-    // Genera una imagen PNG con el resumen del pedido + foto del primer producto
-    async function crearFotoDelPedido(data) {
-      const width = 900;
-      const lineHeight = 36;
-      const baseHeight = 460 + data.items.length * lineHeight;
-      const canvas = document.createElement("canvas");
-      canvas.width = width;
-      canvas.height = baseHeight;
-      const ctx = canvas.getContext("2d");
-
-      // Fondo blush/beige
-      ctx.fillStyle = "#EEDFD7";
-      ctx.fillRect(0, 0, width, baseHeight);
-
-      // Encabezado negro
-      ctx.fillStyle = "#000000";
-      ctx.fillRect(0, 0, width, 110);
-
-      ctx.fillStyle = "#EEDFD7";
-      ctx.font = "bold 28px Helvetica, Arial, sans-serif";
-      ctx.fillText("KLO GYM CLUB", 40, 62);
-
-      ctx.font = "14px Helvetica, Arial, sans-serif";
-      ctx.fillText("PEDIDO PARA @" + INSTAGRAM_USUARIO.toUpperCase(), 40, 88);
-
-      // Foto de referencia del primer producto en el carrito (si carga bien)
-      let textStartX = 45;
-      const firstImgSrc = cart[0] && cart[0].image ? cart[0].image : "";
-      const prodImg = await loadImageElement(firstImgSrc);
-      if (prodImg) {
-        const imgW = 180;
-        const imgH = 240;
-        ctx.fillStyle = "#FFFFFF";
-        ctx.fillRect(45, 140, imgW, imgH);
-        ctx.drawImage(prodImg, 45, 140, imgW, imgH);
-        textStartX = 250;
+    async function copiarPedido(mensaje) {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        try {
+          await navigator.clipboard.writeText(mensaje);
+          return;
+        } catch (e) {}
       }
-
-      // Título y detalle
-      ctx.fillStyle = "#000000";
-      ctx.font = "bold 22px Helvetica, Arial, sans-serif";
-      ctx.fillText("Hola KLO! Quiero pedir:", textStartX, 170);
-
-      ctx.font = "18px Helvetica, Arial, sans-serif";
-      let y = 215;
-      data.items.forEach(line => {
-        ctx.fillText("• " + line, textStartX, y);
-        y += lineHeight;
-      });
-
-      // Total y pie
-      const totalY = Math.max(y + 20, 405);
-      ctx.fillStyle = "#000000";
-      ctx.fillRect(45, totalY - 28, width - 90, 2);
-
-      ctx.font = "bold 24px Helvetica, Arial, sans-serif";
-      ctx.fillText("TOTAL: $" + data.total.toFixed(2), 45, totalY + 12);
-
-      ctx.font = "14px Helvetica, Arial, sans-serif";
-      ctx.fillStyle = "#333333";
-      ctx.fillText("Envía esta imagen por DM a @" + INSTAGRAM_USUARIO, 45, totalY + 46);
-
-      return new Promise(resolve => {
-        canvas.toBlob(blob => {
-          if (!blob) return resolve(null);
-          const file = new File([blob], "pedido-klo-gym-club.png", { type: "image/png" });
-          resolve(file);
-        }, "image/png");
-      });
+      copiarAlPortapapelesFallback(mensaje);
     }
 
     async function enviarPedido() {
@@ -953,28 +858,22 @@
         return;
       }
 
-      const data = buildShareMessage();
-      const fotoFile = await crearFotoDelPedido(data);
+      const mensaje = buildShareMessage();
 
-      // Copiar texto de respaldo al portapapeles
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(data.text).catch(() => {});
-      }
+      await copiarPedido(mensaje);
 
       const feedback = document.getElementById('copyFeedback');
       if (feedback) {
-        feedback.textContent = "Foto del pedido generada. Elige Instagram en el menú.";
+        feedback.textContent = "¡Pedido copiado! En Instagram solo toca Pegar y Enviar.";
         feedback.style.display = "block";
       }
 
-      // Compartir FOTO en el menú nativo (mejor compatibilidad en iPhone)
-      if (fotoFile && navigator.share && (!navigator.canShare || navigator.canShare({ files: [fotoFile] }))) {
+      if (navigator.share) {
         try {
           await navigator.share({
-            files: [fotoFile],
-            title: "Pedido KLO GYM CLUB"
+            title: "Pedido KLO GYM CLUB",
+            text: mensaje
           });
-          return;
         } catch (err) {
           if (err && err.name === "AbortError") {
             return;
@@ -982,19 +881,9 @@
         }
       }
 
-      // Respaldo si el navegador no soporta compartir archivos
-      if (fotoFile) {
-        const url = URL.createObjectURL(fotoFile);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = "pedido-klo-gym-club.png";
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        setTimeout(() => URL.revokeObjectURL(url), 3000);
-      }
-
-      window.open(INSTAGRAM_URL, "_blank", "noopener,noreferrer");
+      setTimeout(() => {
+        window.open(INSTAGRAM_URL, "_blank", "noopener,noreferrer");
+      }, 300);
     }
 
     function pedirPorInstagram() {
