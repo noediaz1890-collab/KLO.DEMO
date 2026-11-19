@@ -498,19 +498,6 @@
       font-size: 11px;
     }
 
-    .btn-copy-only {
-      width: 100%;
-      padding: 10px;
-      background: var(--blanco);
-      color: var(--negro);
-      border: 1px solid var(--negro);
-      font-size: 10px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      cursor: pointer;
-      margin-bottom: 8px;
-    }
-
     .btn-instagram {
       width: 100%;
       padding: 14px;
@@ -529,7 +516,7 @@
 
     .copy-feedback {
       font-size: 11px;
-      line-height: 1.4;
+      line-height: 1.45;
       color: #111;
       background: var(--blush-beige);
       padding: 10px;
@@ -704,8 +691,9 @@
         <span>TOTAL</span>
         <strong id="cartTotal">$0.00</strong>
       </div>
-      <div class="copy-feedback" id="copyFeedback">¡Pedido copiado! En el chat toca la barra de texto y elige <strong>Pegar</strong> en tu teclado.</div>
-      <button type="button" class="btn-copy-only" onclick="soloCopiarPedido()">Copiar texto del pedido</button>
+      <div class="copy-feedback" id="copyFeedback">
+        ¡Pedido ya copiado! En el chat toca la barra de mensaje y pulsa <strong>Pegar</strong> en tu teclado.
+      </div>
       <button type="button" class="btn-instagram" onclick="orderViaInstagram()">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
           <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
@@ -867,7 +855,6 @@
       const p = products[activeProductIndex];
       const size = document.querySelector('#modalSizes .size-btn.selected').textContent;
 
-      // Si ya existe la misma prenda con la misma talla y color, suma la cantidad
       const existing = cart.find(item => item.name === p.name && item.color === p.color && item.size === size);
       if (existing) {
         existing.cantidad += modalQuantity;
@@ -972,23 +959,7 @@
       }
     }
 
-    function soloCopiarPedido() {
-      if (!cart || cart.length === 0) {
-        alert("Agrega al menos una prenda al carrito.");
-        return;
-      }
-      const mensaje = buildShareMessage();
-      copiarAlPortapapelesSincrono(mensaje);
-
-      const feedback = document.getElementById('copyFeedback');
-      if (feedback) {
-        feedback.innerHTML = "¡Pedido copiado! Ya puedes pegarlo en el chat de Instagram.";
-        feedback.style.display = "block";
-      }
-    }
-
     function abrirChatInstagramConTexto(mensaje) {
-      // Incluye ?text=... para pre-llenar donde sea compatible, y deja el texto copiado para Pegar
       const urlConTexto = INSTAGRAM_CHAT_BASE + "?text=" + encodeURIComponent(mensaje);
       const esMovil = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
@@ -1016,16 +987,15 @@
 
       const mensaje = buildShareMessage();
 
-      // 1. Copia el pedido al portapapeles de inmediato (así sale Pegar en el teclado)
+      // Ya queda copiado al tocar Pedir por Instagram para que en el teclado salga Pegar
       copiarAlPortapapelesSincrono(mensaje);
 
       const feedback = document.getElementById('copyFeedback');
       if (feedback) {
-        feedback.innerHTML = "¡Pedido copiado! En el chat toca la caja de mensaje y pulsa <strong>Pegar</strong> en tu teclado.";
+        feedback.innerHTML = "¡Pedido ya copiado! En el chat toca la caja de mensaje y pulsa <strong>Pegar</strong> en tu teclado.";
         feedback.style.display = "block";
       }
 
-      // 2. Abre el chat de Instagram pasando también el texto en la URL
       abrirChatInstagramConTexto(mensaje);
     }
 
