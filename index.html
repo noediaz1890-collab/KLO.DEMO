@@ -514,15 +514,65 @@
       gap: 8px;
     }
 
-    .copy-feedback {
-      font-size: 11px;
-      line-height: 1.45;
-      color: #111;
-      background: var(--blush-beige);
-      padding: 10px;
-      text-align: center;
-      margin-bottom: 10px;
+    /* MODAL PASO INTERMEDIO DE 2 PASOS (OPCIÓN 1) */
+    .step-modal {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 92%;
+      max-width: 420px;
+      background: var(--blanco);
+      border: 1px solid var(--negro);
+      padding: 24px 20px;
+      z-index: 280;
       display: none;
+    }
+    .step-modal.active { display: block; }
+
+    .step-label {
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .step-box {
+      background: #F6F6F6;
+      border: 1px solid var(--gris-piedra);
+      padding: 12px;
+      font-size: 12px;
+      line-height: 1.5;
+      white-space: pre-line;
+      margin-bottom: 14px;
+    }
+
+    .btn-step-copy {
+      width: 100%;
+      padding: 13px;
+      background: var(--blush-beige);
+      color: var(--negro);
+      border: 1px solid var(--negro);
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      font-weight: 700;
+      cursor: pointer;
+      margin-bottom: 10px;
+    }
+    .btn-step-copy.copied {
+      background: #1B5E20;
+      color: var(--blanco);
+      border-color: #1B5E20;
+    }
+
+    .step-status {
+      font-size: 12px;
+      line-height: 1.45;
+      text-align: center;
+      margin-bottom: 14px;
+      min-height: 18px;
     }
   </style>
 </head>
@@ -692,10 +742,6 @@
         <strong id="cartTotal">$0.00</strong>
       </div>
 
-      <div class="copy-feedback" id="copyFeedback">
-        Pedido copiado. Al entrar al chat de Instagram pégalo en el mensaje para enviarlo.
-      </div>
-
       <button type="button" class="btn-instagram" onclick="orderViaInstagram()">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
           <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
@@ -706,6 +752,25 @@
       </button>
     </div>
   </aside>
+
+  <!-- VENTANA INTERMEDIA EN 2 PASOS (SIN DATOS DE USUARIO) -->
+  <div class="step-modal" id="stepModal">
+    <button class="modal-close" onclick="closeStepModal()">✕</button>
+    <div class="step-label">Paso 1: Copia tu pedido</div>
+    <div class="step-box" id="stepOrderText"></div>
+
+    <button type="button" class="btn-step-copy" id="btnStepCopy" onclick="copiarPasoUno()">
+      Copiar pedido
+    </button>
+    <div class="step-status" id="stepStatus">
+      Toca <strong>Copiar pedido</strong> y luego ve al chat de KLO para pegarlo.
+    </div>
+
+    <div class="step-label">Paso 2: Abre el chat y pégalo</div>
+    <button type="button" class="btn-instagram" onclick="irAlChatPasoDos()">
+      Abrir chat de KLO GYM CLUB
+    </button>
+  </div>
 
   <script>
     const INSTAGRAM_USUARIO = "klo.gymclub";
@@ -742,6 +807,7 @@
     let activePhotoIndex = 0;
     let modalQuantity = 1;
     let modalCarouselTimer = null;
+    let pendingOrderMessage = "";
 
     function openMenu() {
       closeAll();
@@ -772,11 +838,23 @@
       }, 2500);
     }
 
+    function closeStepModal() {
+      document.getElementById('stepModal').classList.remove('active');
+      if (
+        !document.getElementById('menuDrawer').classList.contains('active') &&
+        !document.getElementById('cartDrawer').classList.contains('active') &&
+        !document.getElementById('productModal').classList.contains('active')
+      ) {
+        document.getElementById('overlay').classList.remove('active');
+      }
+    }
+
     function closeAll() {
       stopModalCarousel();
       document.getElementById('menuDrawer').classList.remove('active');
       document.getElementById('cartDrawer').classList.remove('active');
       document.getElementById('productModal').classList.remove('active');
+      document.getElementById('stepModal').classList.remove('active');
       document.getElementById('overlay').classList.remove('active');
     }
 
@@ -939,7 +1017,8 @@
       return `Hola KLO! Quiero pedir:\n${items.join('\n')}\nTOTAL: $${total.toFixed(2)}`;
     }
 
-    function copiarAlPortapapelesSincrono(texto) {
+    function copiarTexto(texto) {
+      let copiado = false;
       try {
         const area = document.createElement("textarea");
         area.value = texto;
@@ -954,51 +1033,82 @@
         area.focus();
         area.select();
         area.setSelectionRange(0, area.value.length);
-        document.execCommand("copy");
+        copiado = document.execCommand("copy");
         area.remove();
-      } catch (e) {}
+      } catch (e) {
+        copiado = false;
+      }
 
       if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(texto).catch(() => {});
+        navigator.clipboard.writeText(texto).then(() => {}).catch(() => {});
+      }
+      return copiado;
+    }
+
+    function copiarPasoUno() {
+      if (!pendingOrderMessage) return;
+      copiarTexto(pendingOrderMessage);
+
+      const btn = document.getElementById('btnStepCopy');
+      const status = document.getElementById('stepStatus');
+      if (btn) {
+        btn.textContent = "¡Copiado! Pedido listo";
+        btn.classList.add('copied');
+      }
+      if (status) {
+        status.innerHTML = "Listo, ya lo llevas copiado. Ahora toca <strong>Abrir chat de KLO GYM CLUB</strong> y pégalo en el mensaje.";
       }
     }
 
-    function abrirChatInstagram() {
+    function irAlChatPasoDos() {
       const esMovil = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
       if (esMovil) {
         window.location.href = INSTAGRAM_CHAT_URL;
         return;
       }
-
       const win = window.open(INSTAGRAM_CHAT_URL, "_blank", "noopener,noreferrer");
       if (!win) {
         window.location.href = INSTAGRAM_CHAT_URL;
       }
     }
 
-    function enviarPedido() {
+    function abrirModalDosPasos() {
       if (!cart || cart.length === 0) {
         alert("Agrega al menos una prenda al carrito.");
         return;
       }
 
-      const mensaje = buildShareMessage();
-      copiarAlPortapapelesSincrono(mensaje);
+      pendingOrderMessage = buildShareMessage();
+      document.getElementById('stepOrderText').textContent = pendingOrderMessage;
 
-      const feedback = document.getElementById('copyFeedback');
-      if (feedback) {
-        feedback.style.display = "block";
+      const btn = document.getElementById('btnStepCopy');
+      const status = document.getElementById('stepStatus');
+      if (btn) {
+        btn.textContent = "Copiar pedido";
+        btn.classList.remove('copied');
+      }
+      if (status) {
+        status.innerHTML = "Toca <strong>Copiar pedido</strong> y luego ve al chat de KLO para pegarlo.";
       }
 
-      abrirChatInstagram();
+      // Intenta copiar una primera vez de inmediato, y queda el botón en 2 pasos bien claro
+      copiarTexto(pendingOrderMessage);
+
+      document.getElementById('cartDrawer').classList.remove('active');
+      document.getElementById('stepModal').classList.add('active');
+      document.getElementById('overlay').classList.add('active');
+    }
+
+    function enviarPedido() {
+      abrirModalDosPasos();
     }
 
     function pedirPorInstagram() {
-      enviarPedido();
+      abrirModalDosPasos();
     }
 
     function orderViaInstagram() {
-      enviarPedido();
+      abrirModalDosPasos();
     }
   </script>
 </body>
