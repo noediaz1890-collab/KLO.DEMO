@@ -602,7 +602,7 @@
     </div>
   </section>
 
-  <!-- CATÁLOGO (SIN ETIQUETA BAJO PEDIDO EN PORTADA) -->
+  <!-- CATÁLOGO -->
   <section class="section" id="destacados">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
       <h3 class="section-title" id="catalogTitle" style="margin-bottom:0;">Catálogo</h3>
@@ -632,7 +632,7 @@
     </div>
   </section>
 
-  <!-- MODAL DETALLE DEL PRODUCTO (CON DESCRIPCIÓN, BAJO PEDIDO Y CANTIDAD) -->
+  <!-- MODAL DETALLE DEL PRODUCTO -->
   <div class="product-modal" id="productModal">
     <button class="modal-close" onclick="closeAll()">✕</button>
     <div class="modal-body">
@@ -692,7 +692,7 @@
         <strong id="cartTotal">$0.00</strong>
       </div>
       <div class="copy-feedback" id="copyFeedback">
-        ¡Pedido ya copiado! En el chat toca la barra de mensaje y pulsa <strong>Pegar</strong> en tu teclado.
+        ¡Pedido copiado! Al abrir el chat toca <strong>Mensaje...</strong> y elige <strong>Pegar</strong> en tu teclado.
       </div>
       <button type="button" class="btn-instagram" onclick="orderViaInstagram()">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -707,8 +707,7 @@
 
   <script>
     const INSTAGRAM_USUARIO = "klo.gymclub";
-    const INSTAGRAM_CHAT_BASE = "https://ig.me/m/" + INSTAGRAM_USUARIO;
-    const INSTAGRAM_PERFIL_WEB = "https://www.instagram.com/" + INSTAGRAM_USUARIO + "/";
+    const INSTAGRAM_CHAT_URL = "https://ig.me/m/" + INSTAGRAM_USUARIO;
 
     const products = [
       {
@@ -944,8 +943,11 @@
         area.value = texto;
         area.setAttribute("readonly", "");
         area.style.position = "fixed";
-        area.style.top = "-9999px";
-        area.style.opacity = "0";
+        area.style.top = "0";
+        area.style.left = "0";
+        area.style.width = "2px";
+        area.style.height = "2px";
+        area.style.opacity = "0.01";
         document.body.appendChild(area);
         area.focus();
         area.select();
@@ -959,23 +961,16 @@
       }
     }
 
-    function abrirChatInstagramConTexto(mensaje) {
-      const urlConTexto = INSTAGRAM_CHAT_BASE + "?text=" + encodeURIComponent(mensaje);
+    function abrirChatInstagram() {
       const esMovil = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-
       if (esMovil) {
-        window.location.href = urlConTexto;
-        setTimeout(() => {
-          if (!document.hidden) {
-            window.location.href = INSTAGRAM_PERFIL_WEB;
-          }
-        }, 1200);
+        window.location.href = INSTAGRAM_CHAT_URL;
         return;
       }
 
-      const win = window.open(urlConTexto, "_blank", "noopener,noreferrer");
+      const win = window.open(INSTAGRAM_CHAT_URL, "_blank", "noopener,noreferrer");
       if (!win) {
-        window.location.href = urlConTexto;
+        window.location.href = INSTAGRAM_CHAT_URL;
       }
     }
 
@@ -987,16 +982,17 @@
 
       const mensaje = buildShareMessage();
 
-      // Ya queda copiado al tocar Pedir por Instagram para que en el teclado salga Pegar
+      // 1. Copiar al portapapeles de inmediato para que en el teclado salga Pegar
       copiarAlPortapapelesSincrono(mensaje);
 
       const feedback = document.getElementById('copyFeedback');
       if (feedback) {
-        feedback.innerHTML = "¡Pedido ya copiado! En el chat toca la caja de mensaje y pulsa <strong>Pegar</strong> en tu teclado.";
+        feedback.innerHTML = "¡Pedido copiado! Al abrir el chat toca <strong>Mensaje...</strong> y elige <strong>Pegar</strong> en tu teclado.";
         feedback.style.display = "block";
       }
 
-      abrirChatInstagramConTexto(mensaje);
+      // 2. Abrir el chat de klo.gymclub directo
+      abrirChatInstagram();
     }
 
     function pedirPorInstagram() {
