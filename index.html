@@ -295,14 +295,14 @@
       color: var(--blanco);
     }
 
-    /* MODAL DETALLE MINIMALISTA */
+    /* MODAL DETALLE DEL PRODUCTO */
     .product-modal {
       position: fixed;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
       width: 92%;
-      max-width: 720px;
+      max-width: 780px;
       max-height: 90vh;
       background: var(--blanco);
       z-index: 250;
@@ -316,11 +316,11 @@
       position: absolute;
       top: 12px;
       right: 12px;
-      width: 32px;
-      height: 32px;
+      width: 34px;
+      height: 34px;
       background: var(--blanco);
       border: 1px solid var(--negro);
-      font-size: 15px;
+      font-size: 16px;
       cursor: pointer;
       z-index: 10;
     }
@@ -356,8 +356,8 @@
       gap: 8px;
     }
     .thumb-dot {
-      width: 8px;
-      height: 8px;
+      width: 10px;
+      height: 10px;
       border-radius: 50%;
       border: 1px solid var(--negro);
       background: var(--blanco);
@@ -365,38 +365,52 @@
     }
     .thumb-dot.active { background: var(--negro); }
 
-    /* INFO MINIMALISTA DEL MODAL */
+    /* INFO DEL MODAL */
     .modal-details {
-      padding: 28px 24px;
+      padding: 26px 22px;
       display: flex;
       flex-direction: column;
       justify-content: center;
     }
     .modal-details h2 {
-      font-size: 19px;
+      font-size: 20px;
       font-weight: 500;
       letter-spacing: 1px;
       margin-bottom: 6px;
     }
     .modal-price {
-      font-size: 16px;
-      margin-bottom: 12px;
+      font-size: 18px;
+      margin-bottom: 14px;
+    }
+    .modal-desc {
+      font-size: 13px;
+      line-height: 1.6;
+      color: #333;
+      margin-bottom: 16px;
     }
     .modal-meta {
       font-size: 12px;
-      color: #555;
-      margin-bottom: 22px;
+      margin-bottom: 6px;
+      letter-spacing: 0.5px;
+    }
+    .order-note {
+      display: inline-block;
+      background: var(--blush-beige);
+      padding: 6px 10px;
+      font-size: 11px;
+      letter-spacing: 1px;
+      margin: 8px 0 18px;
     }
 
     .size-grid {
       display: flex;
       gap: 8px;
-      margin-bottom: 24px;
+      margin-bottom: 22px;
       flex-wrap: wrap;
     }
     .size-btn {
       min-width: 42px;
-      height: 38px;
+      height: 40px;
       border: 1px solid var(--negro);
       background: var(--blanco);
       font-size: 11px;
@@ -539,7 +553,7 @@
     </div>
   </section>
 
-  <!-- CATÁLOGO -->
+  <!-- CATÁLOGO (SIN ETIQUETA BAJO PEDIDO EN PORTADA) -->
   <section class="section" id="destacados">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
       <h3 class="section-title" id="catalogTitle" style="margin-bottom:0;">Catálogo</h3>
@@ -569,7 +583,7 @@
     </div>
   </section>
 
-  <!-- MODAL DETALLE MINIMALISTA -->
+  <!-- MODAL DETALLE DEL PRODUCTO (CON DESCRIPCIÓN Y BAJO PEDIDO) -->
   <div class="product-modal" id="productModal">
     <button class="modal-close" onclick="closeAll()">✕</button>
     <div class="modal-body">
@@ -584,8 +598,11 @@
       <div class="modal-details">
         <h2 id="modalTitle">Nombre del Producto</h2>
         <div class="modal-price" id="modalPrice">$0.00</div>
-        <div class="modal-meta">Color: <span id="modalColor"></span></div>
+        <p class="modal-desc" id="modalDesc">Descripción del producto.</p>
+        <div class="modal-meta"><strong>Color:</strong> <span id="modalColor"></span></div>
+        <div class="order-note">Tallas disponibles bajo pedido</div>
 
+        <div style="font-size:11px; letter-spacing:2px; margin-bottom:8px; text-transform:uppercase;">Elige tu talla:</div>
         <div class="size-grid" id="modalSizes">
           <button class="size-btn" onclick="selectSize(this)">XS</button>
           <button class="size-btn selected" onclick="selectSize(this)">S</button>
@@ -616,7 +633,7 @@
         <span>TOTAL</span>
         <strong id="cartTotal">$0.00</strong>
       </div>
-      <div class="copy-feedback" id="copyFeedback">¡Pedido copiado! Pégalo en el chat de Instagram.</div>
+      <div class="copy-feedback" id="copyFeedback">¡Pedido copiado! En el chat toca el mensaje y elige Pegar.</div>
       <button class="btn-instagram" onclick="orderViaInstagram()">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
           <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
@@ -630,7 +647,8 @@
 
   <script>
     const INSTAGRAM_USUARIO = "klo.gymclub";
-    const INSTAGRAM_URL = "https://www.instagram.com/" + INSTAGRAM_USUARIO + "/";
+    const INSTAGRAM_CHAT_WEB = "https://ig.me/m/" + INSTAGRAM_USUARIO;
+    const INSTAGRAM_PERFIL_WEB = "https://www.instagram.com/" + INSTAGRAM_USUARIO + "/";
 
     const products = [
       {
@@ -638,6 +656,7 @@
         price: 25,
         color: "Midnight Black",
         category: "tops",
+        description: "Top deportivo de cuello alto con tiras cruzadas estilo halter y espalda descubierta. Tejido suave de alta elasticidad que brinda soporte y estiliza la silueta.",
         images: [
           "Dynamic High Neck Halter Bra color Midnight Black (2).png",
           "Dynamic High Neck Halter Bra color Midnight Black.png"
@@ -648,6 +667,7 @@
         price: 55,
         color: "Ivory",
         category: "enterizos",
+        description: "Enterizo corto de manga corta con escote pronunciado en la espalda y broche metálico posterior. Ajuste esculpido sin costuras frontales para máxima comodidad.",
         images: [
           "65.png",
           "66.png"
@@ -738,6 +758,7 @@
 
       document.getElementById('modalTitle').textContent = p.name;
       document.getElementById('modalPrice').textContent = '$' + p.price.toFixed(2);
+      document.getElementById('modalDesc').textContent = p.description;
       document.getElementById('modalColor').textContent = p.color;
 
       setModalPhoto(0);
@@ -827,32 +848,47 @@
       return `Hola KLO! Quiero pedir:\n${items.join('\n')}\nTOTAL: $${total.toFixed(2)}`;
     }
 
-    function copiarAlPortapapelesFallback(texto) {
+    function copiarAlPortapapelesSincrono(texto) {
       try {
         const area = document.createElement("textarea");
         area.value = texto;
         area.setAttribute("readonly", "");
         area.style.position = "fixed";
         area.style.top = "-9999px";
+        area.style.opacity = "0";
         document.body.appendChild(area);
+        area.focus();
         area.select();
         area.setSelectionRange(0, area.value.length);
         document.execCommand("copy");
         area.remove();
       } catch (e) {}
-    }
 
-    async function copiarPedido(mensaje) {
       if (navigator.clipboard && navigator.clipboard.writeText) {
-        try {
-          await navigator.clipboard.writeText(mensaje);
-          return;
-        } catch (e) {}
+        navigator.clipboard.writeText(texto).catch(() => {});
       }
-      copiarAlPortapapelesFallback(mensaje);
     }
 
-    async function enviarPedido() {
+    function abrirChatInstagramSincrono() {
+      const esMovil = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+      if (esMovil) {
+        // Intenta abrir el chat de Instagram en la app y cae a ig.me si no está instalada
+        window.location.href = INSTAGRAM_CHAT_WEB;
+        setTimeout(() => {
+          if (!document.hidden) {
+            window.location.href = INSTAGRAM_PERFIL_WEB;
+          }
+        }, 1200);
+        return;
+      }
+
+      const win = window.open(INSTAGRAM_CHAT_WEB, "_blank", "noopener,noreferrer");
+      if (!win) {
+        window.location.href = INSTAGRAM_CHAT_WEB;
+      }
+    }
+
+    function enviarPedido() {
       if (!cart || cart.length === 0) {
         alert("Agrega al menos una prenda al carrito.");
         return;
@@ -860,30 +896,17 @@
 
       const mensaje = buildShareMessage();
 
-      await copiarPedido(mensaje);
+      // 1. Copiar de inmediato (sincrónico al toque)
+      copiarAlPortapapelesSincrono(mensaje);
 
       const feedback = document.getElementById('copyFeedback');
       if (feedback) {
-        feedback.textContent = "¡Pedido copiado! En Instagram solo toca Pegar y Enviar.";
+        feedback.textContent = "¡Pedido copiado! En el chat toca el cuadro de texto y elige Pegar.";
         feedback.style.display = "block";
       }
 
-      if (navigator.share) {
-        try {
-          await navigator.share({
-            title: "Pedido KLO GYM CLUB",
-            text: mensaje
-          });
-        } catch (err) {
-          if (err && err.name === "AbortError") {
-            return;
-          }
-        }
-      }
-
-      setTimeout(() => {
-        window.open(INSTAGRAM_URL, "_blank", "noopener,noreferrer");
-      }, 300);
+      // 2. Abrir chat de Instagram de inmediato sin que el navegador lo bloquee
+      abrirChatInstagramSincrono();
     }
 
     function pedirPorInstagram() {
