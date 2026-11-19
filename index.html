@@ -345,7 +345,7 @@
       .modal-body { grid-template-columns: 1fr 1fr; }
     }
 
-    /* CARRUSEL DENTRO DEL MODAL (PORTADA + SEGUNDA FOTO) */
+    /* CARRUSEL DENTRO DEL MODAL */
     .modal-gallery {
       position: relative;
       background: var(--gris-piedra);
@@ -508,7 +508,6 @@
   <header>
     <button class="icon-btn" onclick="openMenu()" aria-label="Menú">☰</button>
     <div class="logo-container">
-      <!-- Logo blanco/rosado de la marca en la barra negra -->
       <img src="klo logo rosado-.png" alt="KLO GYM CLUB" onerror="this.style.display='none'; document.getElementById('fallback-header').style.display='block';">
       <span id="fallback-header" style="display:none; font-size:18px; letter-spacing:4px; color:var(--blush-beige);">KLO GYM CLUB</span>
     </div>
@@ -543,7 +542,7 @@
     <p style="font-size:10px; letter-spacing:2px; color:var(--gris-piedra);">KLO GYM CLUB © 2026</p>
   </nav>
 
-  <!-- CARRUSEL DE PORTADA (CON EL LOGO DE LA MARCA) -->
+  <!-- CARRUSEL DE PORTADA -->
   <section class="carousel">
     <div class="slide active">
       <div class="badge-nuevo">NUEVO</div>
@@ -587,7 +586,6 @@
     </div>
 
     <div class="product-grid" id="productGrid">
-      <!-- PRODUCTO 1: PORTADA -->
       <div class="product-card" data-category="tops" onclick="openProductModal(0)">
         <div class="product-img-wrap">
           <span class="product-tag">Bajo Pedido</span>
@@ -599,7 +597,6 @@
         <button class="btn-view">Seleccionar Talla</button>
       </div>
 
-      <!-- PRODUCTO 2: PORTADA -->
       <div class="product-card" data-category="enterizos" onclick="openProductModal(1)">
         <div class="product-img-wrap">
           <span class="product-tag">Bajo Pedido</span>
@@ -613,7 +610,7 @@
     </div>
   </section>
 
-  <!-- MODAL DETALLE DE PRODUCTO (CON CARRUSEL DE FOTOS Y TALLAS) -->
+  <!-- MODAL DETALLE DE PRODUCTO -->
   <div class="product-modal" id="productModal">
     <button class="modal-close" onclick="closeAll()">✕</button>
     <div class="modal-body">
@@ -665,9 +662,8 @@
         <span>TOTAL</span>
         <strong id="cartTotal">$0.00</strong>
       </div>
-      <div class="copy-feedback" id="copyFeedback">¡Pedido copiado! Pégalo en el chat de Instagram.</div>
+      <div class="copy-feedback" id="copyFeedback">¡Foto del pedido lista!</div>
       <button class="btn-instagram" onclick="orderViaInstagram()">
-        <!-- Icono Instagram SVG -->
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
           <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
           <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
@@ -679,7 +675,6 @@
   </aside>
 
   <script>
-    // CONFIGURACIÓN - Instagram de la clienta
     const INSTAGRAM_USUARIO = "klo.gymclub";
     const INSTAGRAM_URL = "https://www.instagram.com/" + INSTAGRAM_USUARIO + "/";
 
@@ -809,6 +804,7 @@
         color: p.color,
         size: size,
         price: p.price,
+        image: p.images && p.images[0] ? p.images[0] : "",
         cantidad: 1
       });
 
@@ -862,7 +858,93 @@
         return `${item.name} (${item.color}) Talla ${item.size} x ${cant} - $${subtotal.toFixed(2)}`;
       });
 
-      return `Hola KLO! Quiero pedir:\n${items.join('\n')}\nTOTAL: $${total.toFixed(2)}`;
+      return {
+        text: `Hola KLO! Quiero pedir:\n${items.join('\n')}\nTOTAL: $${total.toFixed(2)}`,
+        items: items,
+        total: total
+      };
+    }
+
+    function loadImageElement(src) {
+      return new Promise(resolve => {
+        if (!src) return resolve(null);
+        const img = new Image();
+        img.crossOrigin = "anonymous";
+        img.onload = () => resolve(img);
+        img.onerror = () => resolve(null);
+        img.src = src;
+      });
+    }
+
+    // Genera una imagen PNG con el resumen del pedido + foto del primer producto
+    async function crearFotoDelPedido(data) {
+      const width = 900;
+      const lineHeight = 36;
+      const baseHeight = 460 + data.items.length * lineHeight;
+      const canvas = document.createElement("canvas");
+      canvas.width = width;
+      canvas.height = baseHeight;
+      const ctx = canvas.getContext("2d");
+
+      // Fondo blush/beige
+      ctx.fillStyle = "#EEDFD7";
+      ctx.fillRect(0, 0, width, baseHeight);
+
+      // Encabezado negro
+      ctx.fillStyle = "#000000";
+      ctx.fillRect(0, 0, width, 110);
+
+      ctx.fillStyle = "#EEDFD7";
+      ctx.font = "bold 28px Helvetica, Arial, sans-serif";
+      ctx.fillText("KLO GYM CLUB", 40, 62);
+
+      ctx.font = "14px Helvetica, Arial, sans-serif";
+      ctx.fillText("PEDIDO PARA @" + INSTAGRAM_USUARIO.toUpperCase(), 40, 88);
+
+      // Foto de referencia del primer producto en el carrito (si carga bien)
+      let textStartX = 45;
+      const firstImgSrc = cart[0] && cart[0].image ? cart[0].image : "";
+      const prodImg = await loadImageElement(firstImgSrc);
+      if (prodImg) {
+        const imgW = 180;
+        const imgH = 240;
+        ctx.fillStyle = "#FFFFFF";
+        ctx.fillRect(45, 140, imgW, imgH);
+        ctx.drawImage(prodImg, 45, 140, imgW, imgH);
+        textStartX = 250;
+      }
+
+      // Título y detalle
+      ctx.fillStyle = "#000000";
+      ctx.font = "bold 22px Helvetica, Arial, sans-serif";
+      ctx.fillText("Hola KLO! Quiero pedir:", textStartX, 170);
+
+      ctx.font = "18px Helvetica, Arial, sans-serif";
+      let y = 215;
+      data.items.forEach(line => {
+        ctx.fillText("• " + line, textStartX, y);
+        y += lineHeight;
+      });
+
+      // Total y pie
+      const totalY = Math.max(y + 20, 405);
+      ctx.fillStyle = "#000000";
+      ctx.fillRect(45, totalY - 28, width - 90, 2);
+
+      ctx.font = "bold 24px Helvetica, Arial, sans-serif";
+      ctx.fillText("TOTAL: $" + data.total.toFixed(2), 45, totalY + 12);
+
+      ctx.font = "14px Helvetica, Arial, sans-serif";
+      ctx.fillStyle = "#333333";
+      ctx.fillText("Envía esta imagen por DM a @" + INSTAGRAM_USUARIO, 45, totalY + 46);
+
+      return new Promise(resolve => {
+        canvas.toBlob(blob => {
+          if (!blob) return resolve(null);
+          const file = new File([blob], "pedido-klo-gym-club.png", { type: "image/png" });
+          resolve(file);
+        }, "image/png");
+      });
     }
 
     async function enviarPedido() {
@@ -871,23 +953,26 @@
         return;
       }
 
-      const mensaje = buildShareMessage();
+      const data = buildShareMessage();
+      const fotoFile = await crearFotoDelPedido(data);
 
+      // Copiar texto de respaldo al portapapeles
       if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(mensaje).catch(() => {});
+        navigator.clipboard.writeText(data.text).catch(() => {});
       }
 
       const feedback = document.getElementById('copyFeedback');
       if (feedback) {
-        feedback.textContent = "Texto listo: " + mensaje.replace(/\n/g, " | ");
+        feedback.textContent = "Foto del pedido generada. Elige Instagram en el menú.";
         feedback.style.display = "block";
       }
 
-      if (navigator.share) {
+      // Compartir FOTO en el menú nativo (mejor compatibilidad en iPhone)
+      if (fotoFile && navigator.share && (!navigator.canShare || navigator.canShare({ files: [fotoFile] }))) {
         try {
           await navigator.share({
-            title: "Pedido KLO GYM CLUB",
-            text: mensaje
+            files: [fotoFile],
+            title: "Pedido KLO GYM CLUB"
           });
           return;
         } catch (err) {
@@ -895,6 +980,18 @@
             return;
           }
         }
+      }
+
+      // Respaldo si el navegador no soporta compartir archivos
+      if (fotoFile) {
+        const url = URL.createObjectURL(fotoFile);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "pedido-klo-gym-club.png";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 3000);
       }
 
       window.open(INSTAGRAM_URL, "_blank", "noopener,noreferrer");
