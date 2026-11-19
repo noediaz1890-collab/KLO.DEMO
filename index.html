@@ -405,7 +405,7 @@
     .size-grid {
       display: flex;
       gap: 8px;
-      margin-bottom: 22px;
+      margin-bottom: 18px;
       flex-wrap: wrap;
     }
     .size-btn {
@@ -420,6 +420,33 @@
     .size-btn.selected {
       background: var(--negro);
       color: var(--blanco);
+    }
+
+    /* CONTROLES DE CANTIDAD */
+    .qty-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .qty-box {
+      display: inline-flex;
+      align-items: center;
+      border: 1px solid var(--negro);
+    }
+    .qty-btn {
+      width: 34px;
+      height: 34px;
+      background: var(--blanco);
+      border: none;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .qty-val {
+      min-width: 34px;
+      text-align: center;
+      font-size: 13px;
+      font-weight: 500;
     }
 
     /* CARRITO LATERAL */
@@ -445,9 +472,43 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 10px;
       padding: 12px 0;
       border-bottom: 1px solid var(--gris-piedra);
       font-size: 12px;
+    }
+
+    .cart-qty-controls {
+      display: inline-flex;
+      align-items: center;
+      border: 1px solid var(--negro);
+      margin-top: 6px;
+    }
+    .cart-qty-controls button {
+      width: 24px;
+      height: 24px;
+      background: var(--blanco);
+      border: none;
+      font-size: 13px;
+      cursor: pointer;
+    }
+    .cart-qty-controls span {
+      min-width: 24px;
+      text-align: center;
+      font-size: 11px;
+    }
+
+    .btn-copy-only {
+      width: 100%;
+      padding: 10px;
+      background: var(--blanco);
+      color: var(--negro);
+      border: 1px solid var(--negro);
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      cursor: pointer;
+      margin-bottom: 8px;
     }
 
     .btn-instagram {
@@ -468,9 +529,10 @@
 
     .copy-feedback {
       font-size: 11px;
-      color: #222;
+      line-height: 1.4;
+      color: #111;
       background: var(--blush-beige);
-      padding: 8px;
+      padding: 10px;
       text-align: center;
       margin-bottom: 10px;
       display: none;
@@ -583,7 +645,7 @@
     </div>
   </section>
 
-  <!-- MODAL DETALLE DEL PRODUCTO (CON DESCRIPCIÓN Y BAJO PEDIDO) -->
+  <!-- MODAL DETALLE DEL PRODUCTO (CON DESCRIPCIÓN, BAJO PEDIDO Y CANTIDAD) -->
   <div class="product-modal" id="productModal">
     <button class="modal-close" onclick="closeAll()">✕</button>
     <div class="modal-body">
@@ -611,6 +673,15 @@
           <button class="size-btn" onclick="selectSize(this)">XL</button>
         </div>
 
+        <div class="qty-row">
+          <span style="font-size:11px; letter-spacing:2px; text-transform:uppercase;">Cantidad:</span>
+          <div class="qty-box">
+            <button type="button" class="qty-btn" onclick="changeModalQty(-1)">−</button>
+            <span class="qty-val" id="modalQty">1</span>
+            <button type="button" class="qty-btn" onclick="changeModalQty(1)">+</button>
+          </div>
+        </div>
+
         <button class="btn-primary" style="width:100%;" onclick="addCurrentProductToCart()">Agregar al Carrito</button>
       </div>
     </div>
@@ -629,12 +700,13 @@
     </div>
 
     <div style="border-top:1px solid var(--gris-piedra); padding-top:16px;">
-      <div style="display:flex; justify-content:space-between; font-size:14px; margin-bottom:14px;">
+      <div style="display:flex; justify-content:space-between; font-size:14px; margin-bottom:12px;">
         <span>TOTAL</span>
         <strong id="cartTotal">$0.00</strong>
       </div>
-      <div class="copy-feedback" id="copyFeedback">¡Pedido copiado! En el chat toca el mensaje y elige Pegar.</div>
-      <button class="btn-instagram" onclick="orderViaInstagram()">
+      <div class="copy-feedback" id="copyFeedback">¡Pedido copiado! En el chat toca la barra de texto y elige <strong>Pegar</strong> en tu teclado.</div>
+      <button type="button" class="btn-copy-only" onclick="soloCopiarPedido()">Copiar texto del pedido</button>
+      <button type="button" class="btn-instagram" onclick="orderViaInstagram()">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
           <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
           <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
@@ -647,7 +719,7 @@
 
   <script>
     const INSTAGRAM_USUARIO = "klo.gymclub";
-    const INSTAGRAM_CHAT_WEB = "https://ig.me/m/" + INSTAGRAM_USUARIO;
+    const INSTAGRAM_CHAT_BASE = "https://ig.me/m/" + INSTAGRAM_USUARIO;
     const INSTAGRAM_PERFIL_WEB = "https://www.instagram.com/" + INSTAGRAM_USUARIO + "/";
 
     const products = [
@@ -679,6 +751,7 @@
     let currentSlide = 0;
     let activeProductIndex = 0;
     let activePhotoIndex = 0;
+    let modalQuantity = 1;
     let modalCarouselTimer = null;
 
     function openMenu() {
@@ -754,8 +827,10 @@
       stopModalCarousel();
       activeProductIndex = index;
       activePhotoIndex = 0;
-      const p = products[index];
+      modalQuantity = 1;
+      document.getElementById('modalQty').textContent = '1';
 
+      const p = products[index];
       document.getElementById('modalTitle').textContent = p.name;
       document.getElementById('modalPrice').textContent = '$' + p.price.toFixed(2);
       document.getElementById('modalDesc').textContent = p.description;
@@ -783,20 +858,40 @@
       btn.classList.add('selected');
     }
 
+    function changeModalQty(delta) {
+      modalQuantity = Math.max(1, modalQuantity + delta);
+      document.getElementById('modalQty').textContent = String(modalQuantity);
+    }
+
     function addCurrentProductToCart() {
       const p = products[activeProductIndex];
       const size = document.querySelector('#modalSizes .size-btn.selected').textContent;
 
-      cart.push({
-        name: p.name,
-        color: p.color,
-        size: size,
-        price: p.price,
-        cantidad: 1
-      });
+      // Si ya existe la misma prenda con la misma talla y color, suma la cantidad
+      const existing = cart.find(item => item.name === p.name && item.color === p.color && item.size === size);
+      if (existing) {
+        existing.cantidad += modalQuantity;
+      } else {
+        cart.push({
+          name: p.name,
+          color: p.color,
+          size: size,
+          price: p.price,
+          cantidad: modalQuantity
+        });
+      }
 
       renderCart();
       openCart();
+    }
+
+    function updateCartQty(idx, delta) {
+      if (!cart[idx]) return;
+      cart[idx].cantidad = (cart[idx].cantidad || 1) + delta;
+      if (cart[idx].cantidad <= 0) {
+        cart.splice(idx, 1);
+      }
+      renderCart();
     }
 
     function renderCart() {
@@ -804,7 +899,8 @@
       const count = document.getElementById('cart-count');
       const totalEl = document.getElementById('cartTotal');
 
-      count.textContent = cart.length;
+      const totalUnidades = cart.reduce((acc, item) => acc + (item.cantidad || 1), 0);
+      count.textContent = totalUnidades;
 
       if (cart.length === 0) {
         container.innerHTML = '<p style="font-size:12px; color:#777; margin-top:20px;">Tu carrito está vacío.</p>';
@@ -821,9 +917,16 @@
           <div class="cart-item">
             <div>
               <div style="font-weight:500;">${item.name}</div>
-              <small style="color:#666;">Color: ${item.color} | Talla: ${item.size} x ${cant} — $${subtotal.toFixed(2)}</small>
+              <small style="color:#666;">Color: ${item.color} | Talla: ${item.size} — $${subtotal.toFixed(2)}</small>
+              <div>
+                <div class="cart-qty-controls">
+                  <button type="button" onclick="updateCartQty(${idx}, -1)">−</button>
+                  <span>${cant}</span>
+                  <button type="button" onclick="updateCartQty(${idx}, 1)">+</button>
+                </div>
+              </div>
             </div>
-            <button onclick="removeItem(${idx})" style="background:none; border:none; cursor:pointer; font-size:11px; text-decoration:underline;">Quitar</button>
+            <button type="button" onclick="removeItem(${idx})" style="background:none; border:none; cursor:pointer; font-size:11px; text-decoration:underline;">Quitar</button>
           </div>
         `;
       }).join('');
@@ -869,11 +972,28 @@
       }
     }
 
-    function abrirChatInstagramSincrono() {
+    function soloCopiarPedido() {
+      if (!cart || cart.length === 0) {
+        alert("Agrega al menos una prenda al carrito.");
+        return;
+      }
+      const mensaje = buildShareMessage();
+      copiarAlPortapapelesSincrono(mensaje);
+
+      const feedback = document.getElementById('copyFeedback');
+      if (feedback) {
+        feedback.innerHTML = "¡Pedido copiado! Ya puedes pegarlo en el chat de Instagram.";
+        feedback.style.display = "block";
+      }
+    }
+
+    function abrirChatInstagramConTexto(mensaje) {
+      // Incluye ?text=... para pre-llenar donde sea compatible, y deja el texto copiado para Pegar
+      const urlConTexto = INSTAGRAM_CHAT_BASE + "?text=" + encodeURIComponent(mensaje);
       const esMovil = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
       if (esMovil) {
-        // Intenta abrir el chat de Instagram en la app y cae a ig.me si no está instalada
-        window.location.href = INSTAGRAM_CHAT_WEB;
+        window.location.href = urlConTexto;
         setTimeout(() => {
           if (!document.hidden) {
             window.location.href = INSTAGRAM_PERFIL_WEB;
@@ -882,9 +1002,9 @@
         return;
       }
 
-      const win = window.open(INSTAGRAM_CHAT_WEB, "_blank", "noopener,noreferrer");
+      const win = window.open(urlConTexto, "_blank", "noopener,noreferrer");
       if (!win) {
-        window.location.href = INSTAGRAM_CHAT_WEB;
+        window.location.href = urlConTexto;
       }
     }
 
@@ -896,17 +1016,17 @@
 
       const mensaje = buildShareMessage();
 
-      // 1. Copiar de inmediato (sincrónico al toque)
+      // 1. Copia el pedido al portapapeles de inmediato (así sale Pegar en el teclado)
       copiarAlPortapapelesSincrono(mensaje);
 
       const feedback = document.getElementById('copyFeedback');
       if (feedback) {
-        feedback.textContent = "¡Pedido copiado! En el chat toca el cuadro de texto y elige Pegar.";
+        feedback.innerHTML = "¡Pedido copiado! En el chat toca la caja de mensaje y pulsa <strong>Pegar</strong> en tu teclado.";
         feedback.style.display = "block";
       }
 
-      // 2. Abrir chat de Instagram de inmediato sin que el navegador lo bloquee
-      abrirChatInstagramSincrono();
+      // 2. Abre el chat de Instagram pasando también el texto en la URL
+      abrirChatInstagramConTexto(mensaje);
     }
 
     function pedirPorInstagram() {
