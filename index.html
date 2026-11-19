@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KLO GYM CLUB - Catálogo Oficial</title>
+  <style>
+    :root {
+      --negro: #000000;
+      --gris-piedra: #D8D8D8;
+      --blush-beige: #EEDFD7;
+      --blanco: #FFFFFF;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--blanco);
+      color: var(--negro);
+      overflow-x: hidden;
+    }
+
+    /* HEADER NEGRO CONTRASTE */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--negro);
+      color: var(--blush-beige);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 20px;
+    }
+
+    .icon-btn {
+      background: none;
+      border: none;
+      color: var(--blush-beige);
+      font-size: 18px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .logo-container img {
+      height: 32px;
+      width: auto;
+      object-fit: contain;
+    }
+
+    /* OVERLAY GENERAL */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.55);
+      display: none;
+      z-index: 200;
+    }
+    .overlay.active { display: block; }
+
+    /* MENU DESPLEGABLE OSCURO */
+    .drawer {
+      position: fixed;
+      top: 0;
+      left: -100%;
+      width: 78%;
+      max-width: 300px;
+      height: 100%;
+      background: var(--negro);
+      color: var(--blanco);
+      z-index: 201;
+      padding: 24px;
+      transition: left 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .drawer.active { left: 0; }
+    .drawer a {
+      display: block;
+      color: var(--blush-beige);
+      text-decoration: none;
+      padding: 15px 0;
+      border-bottom: 1px solid #222;
+      font-size: 12px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    /* CARRUSEL PORTADA CON LOGO DE MARCA */
+    .carousel {
+      position: relative;
+      background-color: var(--blush-beige);
+      min-height: 360px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 40px 24px;
+    }
+
+    .slide {
+      display: none;
+      max-width: 500px;
+      width: 100%;
+    }
+    .slide.active { display: block; }
+
+    .hero-brand-logo {
+      max-width: 190px;
+      height: auto;
+      margin: 0 auto 20px;
+      display: block;
+    }
+
+    .badge-nuevo {
+      display: inline-block;
+      background: var(--negro);
+      color: var(--blanco);
+      font-size: 10px;
+      letter-spacing: 3px;
+      padding: 6px 14px;
+      margin-bottom: 16px;
+      text-transform: uppercase;
+    }
+
+    .slide h2 {
+      font-size: 24px;
+      font-weight: 400;
+      letter-spacing: 3px;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+    }
+
+    .slide p {
+      font-size: 13px;
+      letter-spacing: 1px;
+      margin-bottom: 22px;
+      color: #333;
+    }
+
+    .btn-primary {
+      background: var(--negro);
+      color: var(--blanco);
+      border: 1px solid var(--negro);
+      padding: 13px 28px;
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+
+    .carousel-controls {
+      position: absolute;
+      bottom: 16px;
+      display: flex;
+      gap: 10px;
+    }
+    .dot {
+      width: 28px;
+      height: 2px;
+      background: rgba(0, 0, 0, 0.25);
+      border: none;
+      cursor: pointer;
+    }
+    .dot.active { background: var(--negro); }
+
+    /* SECCIONES */
+    .section {
+      padding: 36px 20px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .section-title {
+      text-align: center;
+      font-size: 12px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+    }
+
+    /* CATEGORÍAS */
+    .cat-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+    @media (min-width: 768px) {
+      .cat-grid { grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    }
+
+    .cat-box {
+      background: var(--gris-piedra);
+      height: 95px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .cat-box:hover,
+    .cat-box.active-cat {
+      background: var(--blush-beige);
+      border: 1px solid var(--negro);
+    }
+
+    /* TARJETAS DE LOS 2 PRODUCTOS */
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+    @media (min-width: 768px) {
+      .product-grid {
+        grid-template-columns: repeat(2, 1fr);
+        max-width: 720px;
+        margin: 0 auto;
+        gap: 32px;
+      }
+    }
+
+    .product-card {
+      display: flex;
+      flex-direction: column;
+      cursor: pointer;
+    }
+
+    .product-img-wrap {
+      width: 100%;
+      aspect-ratio: 3/4;
+      background-color: var(--gris-piedra);
+      overflow: hidden;
+      margin-bottom: 12px;
+      position: relative;
+    }
+
+    .product-img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.35s ease;
+    }
+    .product-card:hover .product-img-wrap img {
+      transform: scale(1.03);
+    }
+
+    .product-tag {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: var(--blanco);
+      color: var(--negro);
+      font-size: 9px;
+      letter-spacing: 1.5px;
+      padding: 4px 8px;
+      text-transform: uppercase;
+    }
+
+    .product-title {
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+    .product-color {
+      font-size: 11px;
+      color: #666;
+      margin-bottom: 4px;
+    }
+    .product-price {
+      font-size: 13px;
+      font-weight: 500;
+      margin-bottom: 10px;
+    }
+
+    .btn-view {
+      width: 100%;
+      padding: 10px;
+      background: var(--blanco);
+      border: 1px solid var(--negro);
+      color: var(--negro);
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      cursor: pointer;
+      margin-top: auto;
+    }
+    .product-card:hover .btn-view {
+      background: var(--negro);
+      color: var(--blanco);
+    }
+
+    /* MODAL DETALLE DEL PRODUCTO */
+    .product-modal {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 92%;
+      max-width: 780px;
+      max-height: 90vh;
+      background: var(--blanco);
+      z-index: 250;
+      display: none;
+      overflow-y: auto;
+      border: 1px solid var(--negro);
+    }
+    .product-modal.active { display: block; }
+
+    .modal-close {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 34px;
+      height: 34px;
+      background: var(--blanco);
+      border: 1px solid var(--negro);
+      font-size: 16px;
+      cursor: pointer;
+      z-index: 10;
+    }
+
+    .modal-body {
+      display: grid;
+      grid-template-columns: 1fr;
+    }
+    @media (min-width: 768px) {
+      .modal-body { grid-template-columns: 1fr 1fr; }
+    }
+
+    /* CARRUSEL DENTRO DEL MODAL (PORTADA + SEGUNDA FOTO) */
+    .modal-gallery {
+      position: relative;
+      background: var(--gris-piedra);
+      aspect-ratio: 3/4;
+    }
+    .modal-gallery img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .gallery-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(255, 255, 255, 0.88);
+      border: 1px solid var(--negro);
+      width: 34px;
+      height: 34px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .gallery-arrow.prev { left: 10px; }
+    .gallery-arrow.next { right: 10px; }
+
+    .gallery-thumbs {
+      position: absolute;
+      bottom: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 8px;
+    }
+    .thumb-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      border: 1px solid var(--negro);
+      background: var(--blanco);
+      cursor: pointer;
+    }
+    .thumb-dot.active { background: var(--negro); }
+
+    /* INFO DEL MODAL */
+    .modal-details {
+      padding: 26px 22px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .modal-details h2 {
+      font-size: 20px;
+      font-weight: 500;
+      letter-spacing: 1px;
+      margin-bottom: 6px;
+    }
+    .modal-price {
+      font-size: 18px;
+      margin-bottom: 14px;
+    }
+    .modal-desc {
+      font-size: 13px;
+      line-height: 1.6;
+      color: #333;
+      margin-bottom: 16px;
+    }
+    .modal-meta {
+      font-size: 12px;
+      margin-bottom: 6px;
+      letter-spacing: 0.5px;
+    }
+    .order-note {
+      display: inline-block;
+      background: var(--blush-beige);
+      padding: 6px 10px;
+      font-size: 11px;
+      letter-spacing: 1px;
+      margin: 8px 0 18px;
+    }
+
+    .size-grid {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 22px;
+      flex-wrap: wrap;
+    }
+    .size-btn {
+      min-width: 42px;
+      height: 40px;
+      border: 1px solid var(--negro);
+      background: var(--blanco);
+      font-size: 11px;
+      letter-spacing: 1px;
+      cursor: pointer;
+    }
+    .size-btn.selected {
+      background: var(--negro);
+      color: var(--blanco);
+    }
+
+    /* CARRITO LATERAL */
+    .cart-drawer {
+      position: fixed;
+      top: 0;
+      right: -100%;
+      width: 88%;
+      max-width: 370px;
+      height: 100%;
+      background: var(--blanco);
+      color: var(--negro);
+      z-index: 260;
+      padding: 24px;
+      transition: right 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .cart-drawer.active { right: 0; }
+    .cart-items { flex: 1; overflow-y: auto; margin-top: 16px; }
+    .cart-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--gris-piedra);
+      font-size: 12px;
+    }
+
+    .btn-instagram {
+      width: 100%;
+      padding: 14px;
+      background: var(--negro);
+      color: var(--blush-beige);
+      border: 1px solid var(--negro);
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .copy-feedback {
+      font-size: 11px;
+      color: #222;
+      background: var(--blush-beige);
+      padding: 8px;
+      text-align: center;
+      margin-bottom: 10px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- BARRA SUPERIOR OSCURA -->
+  <header>
+    <button class="icon-btn" onclick="openMenu()" aria-label="Menú">☰</button>
+    <div class="logo-container">
+      <!-- Logo blanco/rosado de la marca en la barra negra -->
+      <img src="klo logo rosado-.png" alt="KLO GYM CLUB" onerror="this.style.display='none'; document.getElementById('fallback-header').style.display='block';">
+      <span id="fallback-header" style="display:none; font-size:18px; letter-spacing:4px; color:var(--blush-beige);">KLO GYM CLUB</span>
+    </div>
+    <button class="icon-btn" onclick="openCart()" aria-label="Carrito de compras">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="9" cy="21" r="1"></circle>
+        <circle cx="20" cy="21" r="1"></circle>
+        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+      </svg>
+      <span id="cart-count" style="font-size:12px; font-weight:500;">0</span>
+    </button>
+  </header>
+
+  <!-- OVERLAY -->
+  <div class="overlay" id="overlay" onclick="closeAll()"></div>
+
+  <!-- MENU DESPLEGABLE OSCURO -->
+  <nav class="drawer" id="menuDrawer">
+    <div>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+        <span style="letter-spacing:2px; font-size:11px; color:var(--gris-piedra);">NAVEGACIÓN</span>
+        <button class="icon-btn" onclick="closeAll()">✕</button>
+      </div>
+      <a href="#destacados" onclick="filterCategory('todos'); closeAll();">Todo el Catálogo</a>
+      <a href="#destacados" onclick="filterCategory('shorts'); closeAll();">Shorts</a>
+      <a href="#destacados" onclick="filterCategory('tops'); closeAll();">Tops</a>
+      <a href="#destacados" onclick="filterCategory('leggings'); closeAll();">Leggings</a>
+      <a href="#destacados" onclick="filterCategory('flares'); closeAll();">Flares</a>
+      <a href="#destacados" onclick="filterCategory('enterizos'); closeAll();">Enterizos</a>
+      <a href="#destacados" onclick="filterCategory('chaquetas'); closeAll();">Chaquetas</a>
+    </div>
+    <p style="font-size:10px; letter-spacing:2px; color:var(--gris-piedra);">KLO GYM CLUB © 2026</p>
+  </nav>
+
+  <!-- CARRUSEL DE PORTADA (CON EL LOGO DE LA MARCA) -->
+  <section class="carousel">
+    <div class="slide active">
+      <div class="badge-nuevo">NUEVO</div>
+      <img src="klo logo negro.png" alt="KLO GYM CLUB" class="hero-brand-logo" onerror="this.style.display='none';">
+      <h2>Nueva Colección</h2>
+      <p>Piezas minimalistas diseñadas para rendimiento y estilo.</p>
+      <a href="#destacados"><button class="btn-primary">Ver Catálogo</button></a>
+    </div>
+    <div class="slide">
+      <div class="badge-nuevo">BAJO PEDIDO</div>
+      <img src="klo logo negro.png" alt="KLO GYM CLUB" class="hero-brand-logo" onerror="this.style.display='none';">
+      <h2>Tallas XS a XL</h2>
+      <p>Selecciona tu prenda favorita y haz tu pedido directo por Instagram.</p>
+      <a href="#destacados"><button class="btn-primary">Explorar Prendas</button></a>
+    </div>
+
+    <div class="carousel-controls">
+      <button class="dot active" onclick="showSlide(0)"></button>
+      <button class="dot" onclick="showSlide(1)"></button>
+    </div>
+  </section>
+
+  <!-- CATEGORÍAS -->
+  <section class="section">
+    <h3 class="section-title">Categorías</h3>
+    <div class="cat-grid">
+      <div class="cat-box" onclick="filterCategory('shorts', this)">Shorts</div>
+      <div class="cat-box" onclick="filterCategory('tops', this)">Tops</div>
+      <div class="cat-box" onclick="filterCategory('leggings', this)">Leggings</div>
+      <div class="cat-box" onclick="filterCategory('flares', this)">Flares</div>
+      <div class="cat-box" onclick="filterCategory('enterizos', this)">Enterizos</div>
+      <div class="cat-box" onclick="filterCategory('chaquetas', this)">Chaquetas</div>
+    </div>
+  </section>
+
+  <!-- CATÁLOGO CON LOS 2 PRODUCTOS -->
+  <section class="section" id="destacados">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+      <h3 class="section-title" id="catalogTitle" style="margin-bottom:0;">Catálogo</h3>
+      <button onclick="filterCategory('todos')" style="background:none; border:none; font-size:11px; letter-spacing:1.5px; text-decoration:underline; cursor:pointer;">Ver todo</button>
+    </div>
+
+    <div class="product-grid" id="productGrid">
+      <!-- PRODUCTO 1: PORTADA -->
+      <div class="product-card" data-category="tops" onclick="openProductModal(0)">
+        <div class="product-img-wrap">
+          <span class="product-tag">Bajo Pedido</span>
+          <img src="Dynamic High Neck Halter Bra color Midnight Black (2).png" alt="Dynamic High Neck Halter Bra">
+        </div>
+        <div class="product-title">Dynamic High Neck Halter Bra</div>
+        <div class="product-color">Color: Midnight Black</div>
+        <div class="product-price">$25.00</div>
+        <button class="btn-view">Seleccionar Talla</button>
+      </div>
+
+      <!-- PRODUCTO 2: PORTADA -->
+      <div class="product-card" data-category="enterizos" onclick="openProductModal(1)">
+        <div class="product-img-wrap">
+          <span class="product-tag">Bajo Pedido</span>
+          <img src="65.png" alt="Impact Short Sleeve One Piece">
+        </div>
+        <div class="product-title">Impact Short Sleeve One Piece</div>
+        <div class="product-color">Color: Ivory</div>
+        <div class="product-price">$55.00</div>
+        <button class="btn-view">Seleccionar Talla</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- MODAL DETALLE DE PRODUCTO (CON CARRUSEL DE FOTOS Y TALLAS) -->
+  <div class="product-modal" id="productModal">
+    <button class="modal-close" onclick="closeAll()">✕</button>
+    <div class="modal-body">
+      <div class="modal-gallery">
+        <img id="modalImg" src="" alt="Vista del producto">
+        <button class="gallery-arrow prev" onclick="changeModalPhoto(-1)">‹</button>
+        <button class="gallery-arrow next" onclick="changeModalPhoto(1)">›</button>
+        <div class="gallery-thumbs">
+          <button class="thumb-dot active" id="thumb0" onclick="setModalPhoto(0)"></button>
+          <button class="thumb-dot" id="thumb1" onclick="setModalPhoto(1)"></button>
+        </div>
+      </div>
+
+      <div class="modal-details">
+        <h2 id="modalTitle">Nombre del Producto</h2>
+        <div class="modal-price" id="modalPrice">$0.00</div>
+        <p class="modal-desc" id="modalDesc">Descripción del producto.</p>
+        <div class="modal-meta"><strong>Color:</strong> <span id="modalColor"></span></div>
+        <div class="order-note">Tallas disponibles bajo pedido</div>
+
+        <div style="font-size:11px; letter-spacing:2px; margin-bottom:8px; text-transform:uppercase;">Elige tu talla:</div>
+        <div class="size-grid" id="modalSizes">
+          <button class="size-btn" onclick="selectSize(this)">XS</button>
+          <button class="size-btn selected" onclick="selectSize(this)">S</button>
+          <button class="size-btn" onclick="selectSize(this)">M</button>
+          <button class="size-btn" onclick="selectSize(this)">L</button>
+          <button class="size-btn" onclick="selectSize(this)">XL</button>
+        </div>
+
+        <button class="btn-primary" style="width:100%;" onclick="addCurrentProductToCart()">Agregar al Carrito</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARRITO LATERAL CON PEDIDO POR INSTAGRAM -->
+  <aside class="cart-drawer" id="cartDrawer">
+    <div>
+      <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #000; padding-bottom:12px;">
+        <strong style="letter-spacing:2px; font-size:12px;">TU CARRITO</strong>
+        <button class="icon-btn" onclick="closeAll()" style="color:var(--negro);">✕</button>
+      </div>
+      <div class="cart-items" id="cartItems">
+        <p style="font-size:12px; color:#777; margin-top:20px;">Tu carrito está vacío.</p>
+      </div>
+    </div>
+
+    <div style="border-top:1px solid var(--gris-piedra); padding-top:16px;">
+      <div style="display:flex; justify-content:space-between; font-size:14px; margin-bottom:14px;">
+        <span>TOTAL</span>
+        <strong id="cartTotal">$0.00</strong>
+      </div>
+      <div class="copy-feedback" id="copyFeedback">¡Pedido copiado! Pégalo en el chat de Instagram.</div>
+      <button class="btn-instagram" onclick="orderViaInstagram()">
+        <!-- Icono Instagram SVG -->
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+          <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+          <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+        </svg>
+        Pedir por Instagram
+      </button>
+    </div>
+  </aside>
+
+  <script>
+    // CONFIGURACIÓN - Instagram de la clienta
+    const INSTAGRAM_USUARIO = "klo.gymclub";
+    const INSTAGRAM_URL = "https://www.instagram.com/" + INSTAGRAM_USUARIO + "/";
+
+    const products = [
+      {
+        name: "Dynamic High Neck Halter Bra",
+        price: 25,
+        color: "Midnight Black",
+        category: "tops",
+        description: "Top deportivo de cuello alto con tiras cruzadas estilo halter y espalda descubierta. Tejido suave de alta elasticidad que brinda soporte y estiliza la silueta.",
+        images: [
+          "Dynamic High Neck Halter Bra color Midnight Black (2).png",
+          "Dynamic High Neck Halter Bra color Midnight Black.png"
+        ]
+      },
+      {
+        name: "Impact Short Sleeve One Piece",
+        price: 55,
+        color: "Ivory",
+        category: "enterizos",
+        description: "Enterizo corto de manga corta con escote pronunciado en la espalda y broche metálico posterior. Ajuste esculpido sin costuras frontales para máxima comodidad.",
+        images: [
+          "65.png",
+          "66.png"
+        ]
+      }
+    ];
+
+    let cart = [];
+    let currentSlide = 0;
+    let activeProductIndex = 0;
+    let activePhotoIndex = 0;
+
+    function openMenu() {
+      closeAll();
+      document.getElementById('menuDrawer').classList.add('active');
+      document.getElementById('overlay').classList.add('active');
+    }
+
+    function openCart() {
+      closeAll();
+      document.getElementById('cartDrawer').classList.add('active');
+      document.getElementById('overlay').classList.add('active');
+    }
+
+    function closeAll() {
+      document.getElementById('menuDrawer').classList.remove('active');
+      document.getElementById('cartDrawer').classList.remove('active');
+      document.getElementById('productModal').classList.remove('active');
+      document.getElementById('overlay').classList.remove('active');
+    }
+
+    function showSlide(index) {
+      const slides = document.querySelectorAll('.slide');
+      const dots = document.querySelectorAll('.dot');
+      slides.forEach(s => s.classList.remove('active'));
+      dots.forEach(d => d.classList.remove('active'));
+      slides[index].classList.add('active');
+      dots[index].classList.add('active');
+      currentSlide = index;
+    }
+
+    setInterval(() => {
+      currentSlide = (currentSlide + 1) % 2;
+      showSlide(currentSlide);
+    }, 5000);
+
+    function filterCategory(category, boxEl) {
+      document.querySelectorAll('.cat-box').forEach(b => b.classList.remove('active-cat'));
+      if (boxEl) boxEl.classList.add('active-cat');
+
+      const cards = document.querySelectorAll('.product-card');
+      cards.forEach(card => {
+        if (category === 'todos' || card.dataset.category === category) {
+          card.style.display = 'flex';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+
+      const title = document.getElementById('catalogTitle');
+      title.textContent = category === 'todos' ? 'Catálogo' : category.toUpperCase();
+    }
+
+    function openProductModal(index) {
+      activeProductIndex = index;
+      activePhotoIndex = 0;
+      const p = products[index];
+
+      document.getElementById('modalTitle').textContent = p.name;
+      document.getElementById('modalPrice').textContent = '$' + p.price.toFixed(2);
+      document.getElementById('modalDesc').textContent = p.description;
+      document.getElementById('modalColor').textContent = p.color;
+
+      setModalPhoto(0);
+
+      document.getElementById('productModal').classList.add('active');
+      document.getElementById('overlay').classList.add('active');
+    }
+
+    function setModalPhoto(photoIdx) {
+      activePhotoIndex = photoIdx;
+      const p = products[activeProductIndex];
+      document.getElementById('modalImg').src = p.images[photoIdx];
+
+      document.getElementById('thumb0').classList.toggle('active', photoIdx === 0);
+      document.getElementById('thumb1').classList.toggle('active', photoIdx === 1);
+    }
+
+    function changeModalPhoto(step) {
+      const totalPhotos = products[activeProductIndex].images.length;
+      const nextIdx = (activePhotoIndex + step + totalPhotos) % totalPhotos;
+      setModalPhoto(nextIdx);
+    }
+
+    function selectSize(btn) {
+      document.querySelectorAll('#modalSizes .size-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+    }
+
+    function addCurrentProductToCart() {
+      const p = products[activeProductIndex];
+      const size = document.querySelector('#modalSizes .size-btn.selected').textContent;
+
+      cart.push({
+        name: p.name,
+        color: p.color,
+        size: size,
+        price: p.price,
+        cantidad: 1
+      });
+
+      renderCart();
+      openCart();
+    }
+
+    function renderCart() {
+      const container = document.getElementById('cartItems');
+      const count = document.getElementById('cart-count');
+      const totalEl = document.getElementById('cartTotal');
+
+      count.textContent = cart.length;
+
+      if (cart.length === 0) {
+        container.innerHTML = '<p style="font-size:12px; color:#777; margin-top:20px;">Tu carrito está vacío.</p>';
+        totalEl.textContent = '$0.00';
+        return;
+      }
+
+      let total = 0;
+      container.innerHTML = cart.map((item, idx) => {
+        const cant = item.cantidad || 1;
+        const subtotal = item.price * cant;
+        total += subtotal;
+        return `
+          <div class="cart-item">
+            <div>
+              <div style="font-weight:500;">${item.name}</div>
+              <small style="color:#666;">Color: ${item.color} | Talla: ${item.size} x ${cant} — $${subtotal.toFixed(2)}</small>
+            </div>
+            <button onclick="removeItem(${idx})" style="background:none; border:none; cursor:pointer; font-size:11px; text-decoration:underline;">Quitar</button>
+          </div>
+        `;
+      }).join('');
+
+      totalEl.textContent = '$' + total.toFixed(2);
+    }
+
+    function removeItem(idx) {
+      cart.splice(idx, 1);
+      renderCart();
+    }
+
+    function buildShareMessage() {
+      let total = 0;
+      const items = cart.map(item => {
+        const cant = item.cantidad || 1;
+        const subtotal = item.price * cant;
+        total += subtotal;
+        return `${item.name} (${item.color}) Talla ${item.size} x ${cant} - $${subtotal.toFixed(2)}`;
+      });
+
+      return `Hola KLO! Quiero pedir:\n${items.join('\n')}\nTOTAL: $${total.toFixed(2)}`;
+    }
+
+    async function enviarPedido() {
+      if (!cart || cart.length === 0) {
+        alert("Agrega al menos una prenda al carrito.");
+        return;
+      }
+
+      const mensaje = buildShareMessage();
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(mensaje).catch(() => {});
+      }
+
+      const feedback = document.getElementById('copyFeedback');
+      if (feedback) {
+        feedback.textContent = "Texto listo: " + mensaje.replace(/\n/g, " | ");
+        feedback.style.display = "block";
+      }
+
+      if (navigator.share) {
+        try {
+          await navigator.share({
+            title: "Pedido KLO GYM CLUB",
+            text: mensaje
+          });
+          return;
+        } catch (err) {
+          if (err && err.name === "AbortError") {
+            return;
+          }
+        }
+      }
+
+      window.open(INSTAGRAM_URL, "_blank", "noopener,noreferrer");
+    }
+
+    function pedirPorInstagram() {
+      enviarPedido();
+    }
+
+    function orderViaInstagram() {
+      enviarPedido();
+    }
+  </script>
+</body>
+</html>
