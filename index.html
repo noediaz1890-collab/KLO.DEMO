@@ -200,12 +200,16 @@
       cursor: pointer;
       transition: background-color 0.25s var(--ease-suave), color 0.25s var(--ease-suave), transform 0.2s var(--ease-suave);
     }
-    .btn-primary:hover {
+    .btn-primary:hover:not(:disabled) {
       background: #222;
       transform: translateY(-1px);
     }
-    .btn-primary:active {
+    .btn-primary:active:not(:disabled) {
       transform: scale(0.98);
+    }
+    .btn-primary:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
     }
 
     .carousel-controls {
@@ -272,7 +276,7 @@
       transform: translateY(-2px);
     }
 
-    /* TARJETAS DE PRODUCTOS */
+    /* TARJETAS DE PRODUCTOS (LIMPIAS, SIN STOCK EN TARJETA) */
     .product-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -329,28 +333,6 @@
       transform: scale(1.04);
     }
 
-    /* ETIQUETAS DE STOCK */
-    .stock-badge {
-      display: inline-block;
-      font-size: 10px;
-      letter-spacing: 1.2px;
-      text-transform: uppercase;
-      padding: 4px 8px;
-      margin-bottom: 6px;
-      width: fit-content;
-      font-weight: 600;
-    }
-    .stock-inmediato {
-      background: #E8F5E9;
-      color: #1B5E20;
-      border: 1px solid #A5D6A7;
-    }
-    .stock-pedido {
-      background: var(--blush-beige);
-      color: var(--negro);
-      border: 1px solid #C9B5AA;
-    }
-
     .product-title {
       font-size: 13px;
       font-weight: 500;
@@ -384,6 +366,34 @@
     .product-card:hover .btn-view {
       background: var(--negro);
       color: var(--blanco);
+    }
+
+    /* ETIQUETAS DE STOCK (MODAL / CARRITO) */
+    .stock-badge {
+      display: inline-block;
+      font-size: 10px;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      padding: 5px 10px;
+      margin-bottom: 6px;
+      width: fit-content;
+      font-weight: 600;
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+    .stock-inmediato {
+      background: #E8F5E9;
+      color: #1B5E20;
+      border: 1px solid #A5D6A7;
+    }
+    .stock-pedido {
+      background: var(--blush-beige);
+      color: var(--negro);
+      border: 1px solid #C9B5AA;
+    }
+    .stock-agotado {
+      background: #F3F3F3;
+      color: #888;
+      border: 1px solid #DDD;
     }
 
     /* MODAL DETALLE DEL PRODUCTO */
@@ -499,22 +509,17 @@
     }
     .modal-meta {
       font-size: 12px;
-      margin-bottom: 6px;
+      margin-bottom: 8px;
       letter-spacing: 0.5px;
     }
-    .order-note {
-      display: inline-block;
-      padding: 6px 10px;
-      font-size: 11px;
-      letter-spacing: 1px;
-      margin: 8px 0 18px;
-      width: fit-content;
+    .size-stock-status {
+      margin: 6px 0 18px;
     }
 
     .size-grid {
       display: flex;
       gap: 8px;
-      margin-bottom: 18px;
+      margin-bottom: 14px;
       flex-wrap: wrap;
     }
     .size-btn {
@@ -527,12 +532,20 @@
       cursor: pointer;
       transition: background-color 0.2s ease, color 0.2s ease, transform 0.15s ease;
     }
-    .size-btn:active {
+    .size-btn:active:not(:disabled) {
       transform: scale(0.95);
     }
     .size-btn.selected {
       background: var(--negro);
       color: var(--blanco);
+    }
+    .size-btn:disabled,
+    .size-btn.unavailable {
+      border-color: #CCC;
+      color: #AAA;
+      background: #F7F7F7;
+      text-decoration: line-through;
+      cursor: not-allowed;
     }
 
     /* CONTROLES DE CANTIDAD */
@@ -764,10 +777,10 @@
       <a href="#destacados"><button class="btn-primary">Ver Catálogo</button></a>
     </div>
     <div class="slide">
-      <div class="badge-nuevo">ENTREGA INMEDIATA Y BAJO PEDIDO</div>
+      <div class="badge-nuevo">TALLAS XS A XL</div>
       <img src="klo logo negro.png" alt="KLO GYM CLUB" class="hero-brand-logo" onerror="this.style.display='none';">
-      <h2>Tallas XS a XL</h2>
-      <p>Selecciona tu prenda favorita y haz tu pedido directo por Instagram.</p>
+      <h2>Pedido Directo</h2>
+      <p>Selecciona tu prenda y talla para ver disponibilidad y pedir por Instagram.</p>
       <a href="#destacados"><button class="btn-primary">Explorar Prendas</button></a>
     </div>
 
@@ -790,7 +803,7 @@
     </div>
   </section>
 
-  <!-- CATÁLOGO -->
+  <!-- CATÁLOGO (TARJETAS LIMPIAS) -->
   <section class="section" id="destacados">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
       <h3 class="section-title" id="catalogTitle" style="margin-bottom:0;">Catálogo</h3>
@@ -802,7 +815,6 @@
         <div class="product-img-wrap">
           <img src="Dynamic High Neck Halter Bra color Midnight Black (2).png" alt="Dynamic High Neck Halter Bra" loading="lazy">
         </div>
-        <span class="stock-badge stock-inmediato">Entrega inmediata</span>
         <div class="product-title">Dynamic High Neck Halter Bra</div>
         <div class="product-color">Color: Midnight Black</div>
         <div class="product-price">$25.00</div>
@@ -813,7 +825,6 @@
         <div class="product-img-wrap">
           <img src="65.png" alt="Impact Short Sleeve One Piece" loading="lazy">
         </div>
-        <span class="stock-badge stock-pedido">Bajo pedido</span>
         <div class="product-title">Impact Short Sleeve One Piece</div>
         <div class="product-color">Color: Ivory</div>
         <div class="product-price">$55.00</div>
@@ -839,15 +850,12 @@
         <div class="modal-price" id="modalPrice">$0.00</div>
         <p class="modal-desc" id="modalDesc">Descripción del producto.</p>
         <div class="modal-meta"><strong>Color:</strong> <span id="modalColor"></span></div>
-        <div class="order-note" id="modalStockBadge">Disponibilidad</div>
 
-        <div style="font-size:11px; letter-spacing:2px; margin-bottom:8px; text-transform:uppercase;">Elige tu talla:</div>
-        <div class="size-grid" id="modalSizes">
-          <button class="size-btn" onclick="selectSize(this)">XS</button>
-          <button class="size-btn selected" onclick="selectSize(this)">S</button>
-          <button class="size-btn" onclick="selectSize(this)">M</button>
-          <button class="size-btn" onclick="selectSize(this)">L</button>
-          <button class="size-btn" onclick="selectSize(this)">XL</button>
+        <div style="font-size:11px; letter-spacing:2px; margin-top:8px; margin-bottom:8px; text-transform:uppercase;">Elige tu talla:</div>
+        <div class="size-grid" id="modalSizes"></div>
+
+        <div class="size-stock-status">
+          <span class="stock-badge" id="modalStockBadge">Disponibilidad por talla</span>
         </div>
 
         <div class="qty-row">
@@ -859,7 +867,7 @@
           </div>
         </div>
 
-        <button class="btn-primary" style="width:100%;" onclick="addCurrentProductToCart()">Agregar al Carrito</button>
+        <button class="btn-primary" id="btnAddToCart" style="width:100%;" onclick="addCurrentProductToCart()">Agregar al Carrito</button>
       </div>
     </div>
   </div>
@@ -916,14 +924,25 @@
     const INSTAGRAM_USUARIO = "klo.gymclub";
     const INSTAGRAM_CHAT_URL = "https://ig.me/m/" + INSTAGRAM_USUARIO;
 
-    // Valores de stock admitidos: "entrega_inmediata" | "bajo_pedido"
+    // Por cada talla puedes definir:
+    // - null / no incluida / "agotado" -> no disponible
+    // - "entrega_inmediata" -> disponible para entrega inmediata
+    // - "bajo_pedido" -> disponible bajo pedido
+    const ALL_SIZES = ["XS", "S", "M", "L", "XL"];
+
     const products = [
       {
         name: "Dynamic High Neck Halter Bra",
         price: 25,
         color: "Midnight Black",
         category: "tops",
-        stockType: "entrega_inmediata",
+        sizeStock: {
+          XS: null,
+          S: "entrega_inmediata",
+          M: null,
+          L: null,
+          XL: null
+        },
         description: "Top deportivo de cuello alto con tiras cruzadas estilo halter y espalda descubierta. Tejido suave de alta elasticidad que brinda soporte y estiliza la silueta.",
         images: [
           "Dynamic High Neck Halter Bra color Midnight Black (2).png",
@@ -935,7 +954,13 @@
         price: 55,
         color: "Ivory",
         category: "enterizos",
-        stockType: "bajo_pedido",
+        sizeStock: {
+          XS: "bajo_pedido",
+          S: "entrega_inmediata",
+          M: "bajo_pedido",
+          L: "bajo_pedido",
+          XL: null
+        },
         description: "Enterizo corto de manga corta con escote pronunciado en la espalda y broche metálico posterior. Ajuste esculpido sin costuras frontales para máxima comodidad.",
         images: [
           "65.png",
@@ -944,14 +969,24 @@
       }
     ];
 
+    function getSizeStockType(product, size) {
+      if (!product || !product.sizeStock) return null;
+      const val = product.sizeStock[size];
+      if (val === "entrega_inmediata" || val === "bajo_pedido") return val;
+      return null;
+    }
+
     function getStockLabel(stockType) {
-      return stockType === "entrega_inmediata" ? "Entrega inmediata" : "Bajo pedido";
+      if (stockType === "entrega_inmediata") return "Entrega inmediata";
+      if (stockType === "bajo_pedido") return "Bajo pedido";
+      return "No disponible";
     }
 
     let cart = [];
     let currentSlide = 0;
     let activeProductIndex = 0;
     let activePhotoIndex = 0;
+    let selectedSize = null;
     let modalQuantity = 1;
     let modalCarouselTimer = null;
     let pendingOrderMessage = "";
@@ -1037,6 +1072,46 @@
       title.textContent = category === 'todos' ? 'Catálogo' : category.toUpperCase();
     }
 
+    function renderModalSizes(product) {
+      const container = document.getElementById('modalSizes');
+      const firstAvailable = ALL_SIZES.find(sz => getSizeStockType(product, sz) !== null) || null;
+      selectedSize = firstAvailable;
+
+      container.innerHTML = ALL_SIZES.map(sz => {
+        const st = getSizeStockType(product, sz);
+        const available = st !== null;
+        const isSelected = available && sz === selectedSize;
+        return `
+          <button
+            type="button"
+            class="size-btn ${isSelected ? 'selected' : ''} ${!available ? 'unavailable' : ''}"
+            ${!available ? 'disabled' : ''}
+            onclick="selectSize('${sz}')"
+          >${sz}</button>
+        `;
+      }).join('');
+
+      updateModalStockDisplay();
+    }
+
+    function updateModalStockDisplay() {
+      const p = products[activeProductIndex];
+      const badge = document.getElementById('modalStockBadge');
+      const addBtn = document.getElementById('btnAddToCart');
+
+      if (!selectedSize) {
+        badge.textContent = "Sin tallas disponibles";
+        badge.className = "stock-badge stock-agotado";
+        if (addBtn) addBtn.disabled = true;
+        return;
+      }
+
+      const st = getSizeStockType(p, selectedSize);
+      badge.textContent = `Talla ${selectedSize}: ${getStockLabel(st)}`;
+      badge.className = "stock-badge " + (st === "entrega_inmediata" ? "stock-inmediato" : "stock-pedido");
+      if (addBtn) addBtn.disabled = false;
+    }
+
     function openProductModal(index) {
       stopModalCarousel();
       activeProductIndex = index;
@@ -1045,16 +1120,12 @@
       document.getElementById('modalQty').textContent = '1';
 
       const p = products[index];
-      const stockLabel = getStockLabel(p.stockType);
       document.getElementById('modalTitle').textContent = p.name;
       document.getElementById('modalPrice').textContent = '$' + p.price.toFixed(2);
       document.getElementById('modalDesc').textContent = p.description;
       document.getElementById('modalColor').textContent = p.color;
 
-      const stockBadge = document.getElementById('modalStockBadge');
-      stockBadge.textContent = stockLabel;
-      stockBadge.className = 'order-note ' + (p.stockType === 'entrega_inmediata' ? 'stock-inmediato' : 'stock-pedido');
-
+      renderModalSizes(p);
       setModalPhoto(0);
 
       document.getElementById('productModal').classList.add('active');
@@ -1072,9 +1143,16 @@
       document.getElementById('thumb1').classList.toggle('active', photoIdx === 1);
     }
 
-    function selectSize(btn) {
-      document.querySelectorAll('#modalSizes .size-btn').forEach(b => b.classList.remove('selected'));
-      btn.classList.add('selected');
+    function selectSize(sz) {
+      const p = products[activeProductIndex];
+      if (!getSizeStockType(p, sz)) return;
+      selectedSize = sz;
+
+      document.querySelectorAll('#modalSizes .size-btn').forEach(btn => {
+        btn.classList.toggle('selected', btn.textContent.trim() === sz);
+      });
+
+      updateModalStockDisplay();
     }
 
     function changeModalQty(delta) {
@@ -1084,10 +1162,12 @@
 
     function addCurrentProductToCart() {
       const p = products[activeProductIndex];
-      const size = document.querySelector('#modalSizes .size-btn.selected').textContent;
+      if (!selectedSize) return;
+      const st = getSizeStockType(p, selectedSize);
+      if (!st) return;
 
       const existing = cart.find(
-        item => item.name === p.name && item.color === p.color && item.size === size && item.stockType === p.stockType
+        item => item.name === p.name && item.color === p.color && item.size === selectedSize && item.stockType === st
       );
       if (existing) {
         existing.cantidad += modalQuantity;
@@ -1095,9 +1175,9 @@
         cart.push({
           name: p.name,
           color: p.color,
-          size: size,
+          size: selectedSize,
           price: p.price,
-          stockType: p.stockType,
+          stockType: st,
           cantidad: modalQuantity
         });
       }
