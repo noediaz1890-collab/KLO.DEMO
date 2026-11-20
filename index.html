@@ -52,7 +52,7 @@
       display: flex;
       align-items: center;
       gap: 6px;
-      transition: transform 0.2s var(--ease-suave), opacity 0.2s ease;
+      transition: transform 0.2s var(--ease-suave);
     }
     .icon-btn:active {
       transform: scale(0.94);
@@ -69,29 +69,23 @@
       object-fit: contain;
     }
 
-    /* OVERLAY GENERAL CON ANIMACIÓN SUAVE */
+    /* OVERLAY GENERAL */
     .overlay {
       position: fixed;
       inset: 0;
       background: rgba(0, 0, 0, 0.55);
-      opacity: 0;
-      visibility: hidden;
-      pointer-events: none;
-      transition: opacity 0.28s var(--ease-suave), visibility 0.28s var(--ease-suave);
+      display: none;
       z-index: 200;
     }
     .overlay.active {
-      opacity: 1;
-      visibility: visible;
-      pointer-events: auto;
+      display: block;
     }
 
     /* MENU DESPLEGABLE OSCURO */
     .drawer {
       position: fixed;
       top: 0;
-      left: 0;
-      transform: translateX(-100%);
+      left: -100%;
       width: 78%;
       max-width: 300px;
       height: 100%;
@@ -99,13 +93,13 @@
       color: var(--blanco);
       z-index: 201;
       padding: 24px;
-      transition: transform 0.34s var(--ease-suave);
+      transition: left 0.3s var(--ease-suave);
       display: flex;
       flex-direction: column;
       justify-content: space-between;
     }
     .drawer.active {
-      transform: translateX(0);
+      left: 0;
     }
     .drawer a {
       display: block;
@@ -116,11 +110,10 @@
       font-size: 12px;
       letter-spacing: 2px;
       text-transform: uppercase;
-      transition: padding-left 0.22s var(--ease-suave), color 0.2s ease;
+      transition: padding-left 0.2s var(--ease-suave);
     }
     .drawer a:hover {
       padding-left: 6px;
-      color: var(--blanco);
     }
 
     /* CARRUSEL PORTADA CON LOGO DE MARCA */
@@ -139,16 +132,16 @@
       display: none;
       max-width: 500px;
       width: 100%;
-      animation: fadeSlideIn 0.45s var(--ease-suave);
+      animation: fadeSuave 0.4s var(--ease-suave);
     }
     .slide.active {
       display: block;
     }
 
-    @keyframes fadeSlideIn {
+    @keyframes fadeSuave {
       from {
         opacity: 0;
-        transform: translateY(8px);
+        transform: translateY(6px);
       }
       to {
         opacity: 1;
@@ -198,18 +191,13 @@
       letter-spacing: 2px;
       text-transform: uppercase;
       cursor: pointer;
-      transition: background-color 0.25s var(--ease-suave), color 0.25s var(--ease-suave), transform 0.2s var(--ease-suave);
+      transition: background-color 0.2s var(--ease-suave), transform 0.18s var(--ease-suave);
     }
-    .btn-primary:hover:not(:disabled) {
+    .btn-primary:hover {
       background: #222;
-      transform: translateY(-1px);
     }
-    .btn-primary:active:not(:disabled) {
+    .btn-primary:active {
       transform: scale(0.98);
-    }
-    .btn-primary:disabled {
-      opacity: 0.45;
-      cursor: not-allowed;
     }
 
     .carousel-controls {
@@ -224,7 +212,7 @@
       background: rgba(0, 0, 0, 0.25);
       border: none;
       cursor: pointer;
-      transition: background-color 0.25s ease, width 0.25s var(--ease-suave);
+      transition: background-color 0.2s ease, width 0.25s var(--ease-suave);
     }
     .dot.active {
       background: var(--negro);
@@ -267,7 +255,7 @@
       text-transform: uppercase;
       cursor: pointer;
       border: 1px solid transparent;
-      transition: background-color 0.25s var(--ease-suave), border-color 0.25s var(--ease-suave), transform 0.25s var(--ease-suave);
+      transition: background-color 0.22s var(--ease-suave), border-color 0.22s var(--ease-suave), transform 0.22s var(--ease-suave);
     }
     .cat-box:hover,
     .cat-box.active-cat {
@@ -276,7 +264,7 @@
       transform: translateY(-2px);
     }
 
-    /* TARJETAS DE PRODUCTOS (LIMPIAS, SIN STOCK EN PANTALLA PRINCIPAL) */
+    /* TARJETAS DE PRODUCTOS (SIN STOCK AFUERA) */
     .product-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -295,22 +283,10 @@
       display: flex;
       flex-direction: column;
       cursor: pointer;
-      animation: cardFadeUp 0.4s var(--ease-suave);
-      transition: transform 0.28s var(--ease-suave);
+      transition: transform 0.25s var(--ease-suave);
     }
     .product-card:hover {
       transform: translateY(-3px);
-    }
-
-    @keyframes cardFadeUp {
-      from {
-        opacity: 0;
-        transform: translateY(10px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
     }
 
     .product-img-wrap {
@@ -327,10 +303,10 @@
       height: 100%;
       object-fit: cover;
       display: block;
-      transition: transform 0.4s var(--ease-suave);
+      transition: transform 0.35s var(--ease-suave);
     }
     .product-card:hover .product-img-wrap img {
-      transform: scale(1.04);
+      transform: scale(1.03);
     }
 
     .product-title {
@@ -361,14 +337,14 @@
       text-transform: uppercase;
       cursor: pointer;
       margin-top: auto;
-      transition: background-color 0.22s var(--ease-suave), color 0.22s var(--ease-suave);
+      transition: background-color 0.2s var(--ease-suave), color 0.2s var(--ease-suave);
     }
     .product-card:hover .btn-view {
       background: var(--negro);
       color: var(--blanco);
     }
 
-    /* ETIQUETAS DE STOCK (SOLO MODAL / CARRITO) */
+    /* ETIQUETAS DE STOCK DENTRO DEL MODAL / CARRITO */
     .stock-badge {
       display: inline-block;
       font-size: 10px;
@@ -378,7 +354,6 @@
       margin-bottom: 6px;
       width: fit-content;
       font-weight: 600;
-      transition: background-color 0.2s ease, color 0.2s ease;
     }
     .stock-inmediato {
       background: #E8F5E9;
@@ -390,35 +365,25 @@
       color: var(--negro);
       border: 1px solid #C9B5AA;
     }
-    .stock-agotado {
-      background: #F3F3F3;
-      color: #888;
-      border: 1px solid #DDD;
-    }
 
     /* MODAL DETALLE DEL PRODUCTO */
     .product-modal {
       position: fixed;
       top: 50%;
       left: 50%;
-      transform: translate(-50%, -46%) scale(0.97);
+      transform: translate(-50%, -50%);
       width: 92%;
       max-width: 780px;
       max-height: 90vh;
       background: var(--blanco);
       z-index: 250;
-      opacity: 0;
-      visibility: hidden;
-      pointer-events: none;
+      display: none;
       overflow-y: auto;
       border: 1px solid var(--negro);
-      transition: opacity 0.28s var(--ease-suave), transform 0.28s var(--ease-suave), visibility 0.28s var(--ease-suave);
+      animation: fadeSuave 0.25s var(--ease-suave);
     }
     .product-modal.active {
-      opacity: 1;
-      visibility: visible;
-      pointer-events: auto;
-      transform: translate(-50%, -50%) scale(1);
+      display: block;
     }
 
     .modal-close {
@@ -432,11 +397,6 @@
       font-size: 16px;
       cursor: pointer;
       z-index: 10;
-      transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
-    }
-    .modal-close:hover {
-      background: var(--negro);
-      color: var(--blanco);
     }
 
     .modal-body {
@@ -459,7 +419,6 @@
       height: 100%;
       object-fit: cover;
       display: block;
-      transition: opacity 0.3s var(--ease-suave);
     }
 
     .gallery-thumbs {
@@ -477,11 +436,9 @@
       border: 1px solid var(--negro);
       background: var(--blanco);
       cursor: pointer;
-      transition: transform 0.2s ease, background-color 0.2s ease;
     }
     .thumb-dot.active {
       background: var(--negro);
-      transform: scale(1.15);
     }
 
     /* INFO DEL MODAL */
@@ -530,22 +487,11 @@
       font-size: 11px;
       letter-spacing: 1px;
       cursor: pointer;
-      transition: background-color 0.2s ease, color 0.2s ease, transform 0.15s ease;
-    }
-    .size-btn:active:not(:disabled) {
-      transform: scale(0.95);
+      transition: background-color 0.18s ease, color 0.18s ease;
     }
     .size-btn.selected {
       background: var(--negro);
       color: var(--blanco);
-    }
-    .size-btn:disabled,
-    .size-btn.unavailable {
-      border-color: #CCC;
-      color: #AAA;
-      background: #F7F7F7;
-      text-decoration: line-through;
-      cursor: not-allowed;
     }
 
     /* CONTROLES DE CANTIDAD */
@@ -567,10 +513,6 @@
       border: none;
       font-size: 16px;
       cursor: pointer;
-      transition: background-color 0.2s ease;
-    }
-    .qty-btn:hover {
-      background: #F2F2F2;
     }
     .qty-val {
       min-width: 34px;
@@ -583,8 +525,7 @@
     .cart-drawer {
       position: fixed;
       top: 0;
-      right: 0;
-      transform: translateX(100%);
+      right: -100%;
       width: 88%;
       max-width: 370px;
       height: 100%;
@@ -592,13 +533,13 @@
       color: var(--negro);
       z-index: 260;
       padding: 24px;
-      transition: transform 0.34s var(--ease-suave);
+      transition: right 0.3s var(--ease-suave);
       display: flex;
       flex-direction: column;
       justify-content: space-between;
     }
     .cart-drawer.active {
-      transform: translateX(0);
+      right: 0;
     }
     .cart-items { flex: 1; overflow-y: auto; margin-top: 16px; }
     .cart-item {
@@ -609,7 +550,7 @@
       padding: 12px 0;
       border-bottom: 1px solid var(--gris-piedra);
       font-size: 12px;
-      animation: fadeSlideIn 0.28s var(--ease-suave);
+      animation: fadeSuave 0.25s var(--ease-suave);
     }
 
     .cart-qty-controls {
@@ -646,11 +587,10 @@
       align-items: center;
       justify-content: center;
       gap: 8px;
-      transition: background-color 0.25s var(--ease-suave), transform 0.2s var(--ease-suave);
+      transition: background-color 0.2s var(--ease-suave);
     }
     .btn-instagram:hover {
       background: #1A1A1A;
-      transform: translateY(-1px);
     }
 
     /* MODAL PASO INTERMEDIO DE 2 PASOS */
@@ -658,23 +598,18 @@
       position: fixed;
       top: 50%;
       left: 50%;
-      transform: translate(-50%, -46%) scale(0.96);
+      transform: translate(-50%, -50%);
       width: 92%;
       max-width: 420px;
       background: var(--blanco);
       border: 1px solid var(--negro);
       padding: 24px 20px;
       z-index: 280;
-      opacity: 0;
-      visibility: hidden;
-      pointer-events: none;
-      transition: opacity 0.28s var(--ease-suave), transform 0.28s var(--ease-suave), visibility 0.28s var(--ease-suave);
+      display: none;
+      animation: fadeSuave 0.25s var(--ease-suave);
     }
     .step-modal.active {
-      opacity: 1;
-      visibility: visible;
-      pointer-events: auto;
-      transform: translate(-50%, -50%) scale(1);
+      display: block;
     }
 
     .step-label {
@@ -707,10 +642,7 @@
       font-weight: 700;
       cursor: pointer;
       margin-bottom: 10px;
-      transition: background-color 0.25s var(--ease-suave), color 0.25s var(--ease-suave), transform 0.18s ease;
-    }
-    .btn-step-copy:active {
-      transform: scale(0.98);
+      transition: background-color 0.2s var(--ease-suave), color 0.2s var(--ease-suave);
     }
     .btn-step-copy.copied {
       background: #1B5E20;
@@ -780,7 +712,7 @@
       <div class="badge-nuevo">TALLAS XS A XL</div>
       <img src="klo logo negro.png" alt="KLO GYM CLUB" class="hero-brand-logo" onerror="this.style.display='none';">
       <h2>Pedido Directo</h2>
-      <p>Selecciona tu prenda y talla para ver disponibilidad y pedir por Instagram.</p>
+      <p>Selecciona tu prenda favorita y haz tu pedido directo por Instagram.</p>
       <a href="#destacados"><button class="btn-primary">Explorar Prendas</button></a>
     </div>
 
@@ -803,7 +735,7 @@
     </div>
   </section>
 
-  <!-- CATÁLOGO (SIN ETIQUETA BAJO PEDIDO NI ENTREGA INMEDIATA EN PANTALLA PRINCIPAL) -->
+  <!-- CATÁLOGO (SIN STOCK EN PANTALLA PRINCIPAL) -->
   <section class="section" id="destacados">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
       <h3 class="section-title" id="catalogTitle" style="margin-bottom:0;">Catálogo</h3>
@@ -833,7 +765,7 @@
     </div>
   </section>
 
-  <!-- MODAL DETALLE DEL PRODUCTO (AQUÍ APARECE LA DISPONIBILIDAD POR TALLA) -->
+  <!-- MODAL DETALLE DEL PRODUCTO (AQUÍ SALE EL STOCK POR TALLA) -->
   <div class="product-modal" id="productModal">
     <button class="modal-close" onclick="closeAll()">✕</button>
     <div class="modal-body">
@@ -852,10 +784,16 @@
         <div class="modal-meta"><strong>Color:</strong> <span id="modalColor"></span></div>
 
         <div style="font-size:11px; letter-spacing:2px; margin-top:8px; margin-bottom:8px; text-transform:uppercase;">Elige tu talla:</div>
-        <div class="size-grid" id="modalSizes"></div>
+        <div class="size-grid" id="modalSizes">
+          <button type="button" class="size-btn" onclick="selectSize(this, 'XS')">XS</button>
+          <button type="button" class="size-btn selected" onclick="selectSize(this, 'S')">S</button>
+          <button type="button" class="size-btn" onclick="selectSize(this, 'M')">M</button>
+          <button type="button" class="size-btn" onclick="selectSize(this, 'L')">L</button>
+          <button type="button" class="size-btn" onclick="selectSize(this, 'XL')">XL</button>
+        </div>
 
         <div class="size-stock-status">
-          <span class="stock-badge" id="modalStockBadge">Disponibilidad por talla</span>
+          <span class="stock-badge" id="modalStockBadge">Entrega inmediata</span>
         </div>
 
         <div class="qty-row">
@@ -867,7 +805,7 @@
           </div>
         </div>
 
-        <button class="btn-primary" id="btnAddToCart" style="width:100%;" onclick="addCurrentProductToCart()">Agregar al Carrito</button>
+        <button class="btn-primary" style="width:100%;" onclick="addCurrentProductToCart()">Agregar al Carrito</button>
       </div>
     </div>
   </div>
@@ -901,7 +839,7 @@
     </div>
   </aside>
 
-  <!-- VENTANA INTERMEDIA EN 2 PASOS (SIN DATOS DE USUARIO) -->
+  <!-- VENTANA INTERMEDIA EN 2 PASOS -->
   <div class="step-modal" id="stepModal">
     <button class="modal-close" onclick="closeStepModal()">✕</button>
     <div class="step-label">Paso 1: Copia tu pedido</div>
@@ -924,12 +862,7 @@
     const INSTAGRAM_USUARIO = "klo.gymclub";
     const INSTAGRAM_CHAT_URL = "https://ig.me/m/" + INSTAGRAM_USUARIO;
 
-    // Por cada talla puedes poner:
-    // - "entrega_inmediata" -> disponible para entrega inmediata
-    // - "bajo_pedido" -> disponible bajo pedido
-    // - null / "agotado" -> solo si realmente esa talla no está disponible
-    const ALL_SIZES = ["XS", "S", "M", "L", "XL"];
-
+    // Configura por talla: "entrega_inmediata" o "bajo_pedido"
     const products = [
       {
         name: "Dynamic High Neck Halter Bra",
@@ -940,8 +873,8 @@
           XS: "entrega_inmediata",
           S: "entrega_inmediata",
           M: "entrega_inmediata",
-          L: "entrega_inmediata",
-          XL: "entrega_inmediata"
+          L: "bajo_pedido",
+          XL: "bajo_pedido"
         },
         description: "Top deportivo de cuello alto con tiras cruzadas estilo halter y espalda descubierta. Tejido suave de alta elasticidad que brinda soporte y estiliza la silueta.",
         images: [
@@ -956,7 +889,7 @@
         category: "enterizos",
         sizeStock: {
           XS: "bajo_pedido",
-          S: "bajo_pedido",
+          S: "entrega_inmediata",
           M: "bajo_pedido",
           L: "bajo_pedido",
           XL: "bajo_pedido"
@@ -969,25 +902,20 @@
       }
     ];
 
-    function getSizeStockType(product, size) {
+    function getStockTypeForSize(product, size) {
       if (!product || !product.sizeStock) return "bajo_pedido";
-      const val = product.sizeStock[size];
-      if (val === "entrega_inmediata" || val === "bajo_pedido") return val;
-      if (val === null || val === "agotado") return null;
-      return "bajo_pedido";
+      return product.sizeStock[size] === "entrega_inmediata" ? "entrega_inmediata" : "bajo_pedido";
     }
 
     function getStockLabel(stockType) {
-      if (stockType === "entrega_inmediata") return "Entrega inmediata";
-      if (stockType === "bajo_pedido") return "Bajo pedido";
-      return "No disponible";
+      return stockType === "entrega_inmediata" ? "Entrega inmediata" : "Bajo pedido";
     }
 
     let cart = [];
     let currentSlide = 0;
     let activeProductIndex = 0;
     let activePhotoIndex = 0;
-    let selectedSize = null;
+    let selectedSize = "S";
     let modalQuantity = 1;
     let modalCarouselTimer = null;
     let pendingOrderMessage = "";
@@ -1073,52 +1001,25 @@
       title.textContent = category === 'todos' ? 'Catálogo' : category.toUpperCase();
     }
 
-    function renderModalSizes(product) {
-      const container = document.getElementById('modalSizes');
-      const firstAvailable = ALL_SIZES.find(sz => getSizeStockType(product, sz) !== null) || null;
-      selectedSize = firstAvailable;
-
-      container.innerHTML = ALL_SIZES.map(sz => {
-        const st = getSizeStockType(product, sz);
-        const available = st !== null;
-        const isSelected = available && sz === selectedSize;
-        return `
-          <button
-            type="button"
-            class="size-btn ${isSelected ? 'selected' : ''} ${!available ? 'unavailable' : ''}"
-            ${!available ? 'disabled' : ''}
-            onclick="selectSize('${sz}')"
-          >${sz}</button>
-        `;
-      }).join('');
-
-      updateModalStockDisplay();
-    }
-
-    function updateModalStockDisplay() {
+    function updateModalStockBadge() {
       const p = products[activeProductIndex];
+      const st = getStockTypeForSize(p, selectedSize);
       const badge = document.getElementById('modalStockBadge');
-      const addBtn = document.getElementById('btnAddToCart');
-
-      if (!selectedSize) {
-        badge.textContent = "Sin tallas disponibles";
-        badge.className = "stock-badge stock-agotado";
-        if (addBtn) addBtn.disabled = true;
-        return;
-      }
-
-      const st = getSizeStockType(p, selectedSize);
-      badge.textContent = `Talla ${selectedSize}: ${getStockLabel(st)}`;
+      badge.textContent = "Talla " + selectedSize + ": " + getStockLabel(st);
       badge.className = "stock-badge " + (st === "entrega_inmediata" ? "stock-inmediato" : "stock-pedido");
-      if (addBtn) addBtn.disabled = false;
     }
 
     function openProductModal(index) {
       stopModalCarousel();
       activeProductIndex = index;
       activePhotoIndex = 0;
+      selectedSize = "S";
       modalQuantity = 1;
       document.getElementById('modalQty').textContent = '1';
+
+      document.querySelectorAll('#modalSizes .size-btn').forEach(btn => {
+        btn.classList.toggle('selected', btn.textContent.trim() === 'S');
+      });
 
       const p = products[index];
       document.getElementById('modalTitle').textContent = p.name;
@@ -1126,7 +1027,7 @@
       document.getElementById('modalDesc').textContent = p.description;
       document.getElementById('modalColor').textContent = p.color;
 
-      renderModalSizes(p);
+      updateModalStockBadge();
       setModalPhoto(0);
 
       document.getElementById('productModal').classList.add('active');
@@ -1144,16 +1045,11 @@
       document.getElementById('thumb1').classList.toggle('active', photoIdx === 1);
     }
 
-    function selectSize(sz) {
-      const p = products[activeProductIndex];
-      if (!getSizeStockType(p, sz)) return;
+    function selectSize(btn, sz) {
       selectedSize = sz;
-
-      document.querySelectorAll('#modalSizes .size-btn').forEach(btn => {
-        btn.classList.toggle('selected', btn.textContent.trim() === sz);
-      });
-
-      updateModalStockDisplay();
+      document.querySelectorAll('#modalSizes .size-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      updateModalStockBadge();
     }
 
     function changeModalQty(delta) {
@@ -1163,9 +1059,7 @@
 
     function addCurrentProductToCart() {
       const p = products[activeProductIndex];
-      if (!selectedSize) return;
-      const st = getSizeStockType(p, selectedSize);
-      if (!st) return;
+      const st = getStockTypeForSize(p, selectedSize);
 
       const existing = cart.find(
         item => item.name === p.name && item.color === p.color && item.size === selectedSize && item.stockType === st
@@ -1311,3 +1205,44 @@
         window.location.href = INSTAGRAM_CHAT_URL;
       }
     }
+
+    function abrirModalDosPasos() {
+      if (!cart || cart.length === 0) {
+        alert("Agrega al menos una prenda al carrito.");
+        return;
+      }
+
+      pendingOrderMessage = buildShareMessage();
+      document.getElementById('stepOrderText').textContent = pendingOrderMessage;
+
+      const btn = document.getElementById('btnStepCopy');
+      const status = document.getElementById('stepStatus');
+      if (btn) {
+        btn.textContent = "Copiar pedido";
+        btn.classList.remove('copied');
+      }
+      if (status) {
+        status.innerHTML = "Toca <strong>Copiar pedido</strong> y luego ve al chat de KLO para pegarlo.";
+      }
+
+      copiarTexto(pendingOrderMessage);
+
+      document.getElementById('cartDrawer').classList.remove('active');
+      document.getElementById('stepModal').classList.add('active');
+      document.getElementById('overlay').classList.add('active');
+    }
+
+    function enviarPedido() {
+      abrirModalDosPasos();
+    }
+
+    function pedirPorInstagram() {
+      abrirModalDosPasos();
+    }
+
+    function orderViaInstagram() {
+      abrirModalDosPasos();
+    }
+  </script>
+</body>
+</html>
