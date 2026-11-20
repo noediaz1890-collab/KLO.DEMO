@@ -380,7 +380,6 @@
       display: none;
       overflow-y: auto;
       border: 1px solid var(--negro);
-      animation: fadeSuave 0.25s var(--ease-suave);
     }
     .product-modal.active {
       display: block;
@@ -407,7 +406,7 @@
       .modal-body { grid-template-columns: 1fr 1fr; }
     }
 
-    /* CARRUSEL AUTOMÁTICO DENTRO DEL MODAL */
+    /* CARRUSEL DENTRO DEL MODAL SIN TRANSICIÓN FEA EN LA IMAGEN */
     .modal-gallery {
       position: relative;
       background: var(--gris-piedra);
@@ -419,6 +418,8 @@
       height: 100%;
       object-fit: cover;
       display: block;
+      transition: none;
+      animation: none;
     }
 
     .gallery-thumbs {
@@ -1039,7 +1040,10 @@
     function setModalPhoto(photoIdx) {
       activePhotoIndex = photoIdx;
       const p = products[activeProductIndex];
-      document.getElementById('modalImg').src = p.images[photoIdx];
+      const imgEl = document.getElementById('modalImg');
+      if (imgEl.getAttribute('src') !== p.images[photoIdx]) {
+        imgEl.src = p.images[photoIdx];
+      }
 
       document.getElementById('thumb0').classList.toggle('active', photoIdx === 0);
       document.getElementById('thumb1').classList.toggle('active', photoIdx === 1);
