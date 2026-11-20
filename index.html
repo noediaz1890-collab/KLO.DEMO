@@ -10,6 +10,7 @@
       --gris-piedra: #D8D8D8;
       --blush-beige: #EEDFD7;
       --blanco: #FFFFFF;
+      --ease-suave: cubic-bezier(0.22, 1, 0.36, 1);
     }
 
     * {
@@ -17,6 +18,10 @@
       margin: 0;
       padding: 0;
       font-family: 'Helvetica Neue', Arial, sans-serif;
+    }
+
+    html {
+      scroll-behavior: smooth;
     }
 
     body {
@@ -47,6 +52,10 @@
       display: flex;
       align-items: center;
       gap: 6px;
+      transition: transform 0.2s var(--ease-suave), opacity 0.2s ease;
+    }
+    .icon-btn:active {
+      transform: scale(0.94);
     }
 
     .logo-container {
@@ -60,21 +69,29 @@
       object-fit: contain;
     }
 
-    /* OVERLAY GENERAL */
+    /* OVERLAY GENERAL CON ANIMACIÓN SUAVE */
     .overlay {
       position: fixed;
       inset: 0;
       background: rgba(0, 0, 0, 0.55);
-      display: none;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity 0.28s var(--ease-suave), visibility 0.28s var(--ease-suave);
       z-index: 200;
     }
-    .overlay.active { display: block; }
+    .overlay.active {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+    }
 
     /* MENU DESPLEGABLE OSCURO */
     .drawer {
       position: fixed;
       top: 0;
-      left: -100%;
+      left: 0;
+      transform: translateX(-100%);
       width: 78%;
       max-width: 300px;
       height: 100%;
@@ -82,12 +99,14 @@
       color: var(--blanco);
       z-index: 201;
       padding: 24px;
-      transition: left 0.3s ease;
+      transition: transform 0.34s var(--ease-suave);
       display: flex;
       flex-direction: column;
       justify-content: space-between;
     }
-    .drawer.active { left: 0; }
+    .drawer.active {
+      transform: translateX(0);
+    }
     .drawer a {
       display: block;
       color: var(--blush-beige);
@@ -97,6 +116,11 @@
       font-size: 12px;
       letter-spacing: 2px;
       text-transform: uppercase;
+      transition: padding-left 0.22s var(--ease-suave), color 0.2s ease;
+    }
+    .drawer a:hover {
+      padding-left: 6px;
+      color: var(--blanco);
     }
 
     /* CARRUSEL PORTADA CON LOGO DE MARCA */
@@ -115,8 +139,22 @@
       display: none;
       max-width: 500px;
       width: 100%;
+      animation: fadeSlideIn 0.45s var(--ease-suave);
     }
-    .slide.active { display: block; }
+    .slide.active {
+      display: block;
+    }
+
+    @keyframes fadeSlideIn {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
 
     .hero-brand-logo {
       max-width: 190px;
@@ -160,6 +198,14 @@
       letter-spacing: 2px;
       text-transform: uppercase;
       cursor: pointer;
+      transition: background-color 0.25s var(--ease-suave), color 0.25s var(--ease-suave), transform 0.2s var(--ease-suave);
+    }
+    .btn-primary:hover {
+      background: #222;
+      transform: translateY(-1px);
+    }
+    .btn-primary:active {
+      transform: scale(0.98);
     }
 
     .carousel-controls {
@@ -174,8 +220,12 @@
       background: rgba(0, 0, 0, 0.25);
       border: none;
       cursor: pointer;
+      transition: background-color 0.25s ease, width 0.25s var(--ease-suave);
     }
-    .dot.active { background: var(--negro); }
+    .dot.active {
+      background: var(--negro);
+      width: 36px;
+    }
 
     /* SECCIONES */
     .section {
@@ -212,12 +262,14 @@
       letter-spacing: 2px;
       text-transform: uppercase;
       cursor: pointer;
-      transition: background 0.2s;
+      border: 1px solid transparent;
+      transition: background-color 0.25s var(--ease-suave), border-color 0.25s var(--ease-suave), transform 0.25s var(--ease-suave);
     }
     .cat-box:hover,
     .cat-box.active-cat {
       background: var(--blush-beige);
-      border: 1px solid var(--negro);
+      border-color: var(--negro);
+      transform: translateY(-2px);
     }
 
     /* TARJETAS DE PRODUCTOS */
@@ -239,6 +291,22 @@
       display: flex;
       flex-direction: column;
       cursor: pointer;
+      animation: cardFadeUp 0.4s var(--ease-suave);
+      transition: transform 0.28s var(--ease-suave);
+    }
+    .product-card:hover {
+      transform: translateY(-3px);
+    }
+
+    @keyframes cardFadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     .product-img-wrap {
@@ -255,10 +323,32 @@
       height: 100%;
       object-fit: cover;
       display: block;
-      transition: transform 0.35s ease;
+      transition: transform 0.4s var(--ease-suave);
     }
     .product-card:hover .product-img-wrap img {
-      transform: scale(1.03);
+      transform: scale(1.04);
+    }
+
+    /* ETIQUETAS DE STOCK */
+    .stock-badge {
+      display: inline-block;
+      font-size: 10px;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      padding: 4px 8px;
+      margin-bottom: 6px;
+      width: fit-content;
+      font-weight: 600;
+    }
+    .stock-inmediato {
+      background: #E8F5E9;
+      color: #1B5E20;
+      border: 1px solid #A5D6A7;
+    }
+    .stock-pedido {
+      background: var(--blush-beige);
+      color: var(--negro);
+      border: 1px solid #C9B5AA;
     }
 
     .product-title {
@@ -289,6 +379,7 @@
       text-transform: uppercase;
       cursor: pointer;
       margin-top: auto;
+      transition: background-color 0.22s var(--ease-suave), color 0.22s var(--ease-suave);
     }
     .product-card:hover .btn-view {
       background: var(--negro);
@@ -300,17 +391,25 @@
       position: fixed;
       top: 50%;
       left: 50%;
-      transform: translate(-50%, -50%);
+      transform: translate(-50%, -46%) scale(0.97);
       width: 92%;
       max-width: 780px;
       max-height: 90vh;
       background: var(--blanco);
       z-index: 250;
-      display: none;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
       overflow-y: auto;
       border: 1px solid var(--negro);
+      transition: opacity 0.28s var(--ease-suave), transform 0.28s var(--ease-suave), visibility 0.28s var(--ease-suave);
     }
-    .product-modal.active { display: block; }
+    .product-modal.active {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+      transform: translate(-50%, -50%) scale(1);
+    }
 
     .modal-close {
       position: absolute;
@@ -323,6 +422,11 @@
       font-size: 16px;
       cursor: pointer;
       z-index: 10;
+      transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+    }
+    .modal-close:hover {
+      background: var(--negro);
+      color: var(--blanco);
     }
 
     .modal-body {
@@ -345,6 +449,7 @@
       height: 100%;
       object-fit: cover;
       display: block;
+      transition: opacity 0.3s var(--ease-suave);
     }
 
     .gallery-thumbs {
@@ -362,8 +467,12 @@
       border: 1px solid var(--negro);
       background: var(--blanco);
       cursor: pointer;
+      transition: transform 0.2s ease, background-color 0.2s ease;
     }
-    .thumb-dot.active { background: var(--negro); }
+    .thumb-dot.active {
+      background: var(--negro);
+      transform: scale(1.15);
+    }
 
     /* INFO DEL MODAL */
     .modal-details {
@@ -395,11 +504,11 @@
     }
     .order-note {
       display: inline-block;
-      background: var(--blush-beige);
       padding: 6px 10px;
       font-size: 11px;
       letter-spacing: 1px;
       margin: 8px 0 18px;
+      width: fit-content;
     }
 
     .size-grid {
@@ -416,6 +525,10 @@
       font-size: 11px;
       letter-spacing: 1px;
       cursor: pointer;
+      transition: background-color 0.2s ease, color 0.2s ease, transform 0.15s ease;
+    }
+    .size-btn:active {
+      transform: scale(0.95);
     }
     .size-btn.selected {
       background: var(--negro);
@@ -441,6 +554,10 @@
       border: none;
       font-size: 16px;
       cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+    .qty-btn:hover {
+      background: #F2F2F2;
     }
     .qty-val {
       min-width: 34px;
@@ -453,7 +570,8 @@
     .cart-drawer {
       position: fixed;
       top: 0;
-      right: -100%;
+      right: 0;
+      transform: translateX(100%);
       width: 88%;
       max-width: 370px;
       height: 100%;
@@ -461,12 +579,14 @@
       color: var(--negro);
       z-index: 260;
       padding: 24px;
-      transition: right 0.3s ease;
+      transition: transform 0.34s var(--ease-suave);
       display: flex;
       flex-direction: column;
       justify-content: space-between;
     }
-    .cart-drawer.active { right: 0; }
+    .cart-drawer.active {
+      transform: translateX(0);
+    }
     .cart-items { flex: 1; overflow-y: auto; margin-top: 16px; }
     .cart-item {
       display: flex;
@@ -476,6 +596,7 @@
       padding: 12px 0;
       border-bottom: 1px solid var(--gris-piedra);
       font-size: 12px;
+      animation: fadeSlideIn 0.28s var(--ease-suave);
     }
 
     .cart-qty-controls {
@@ -512,23 +633,36 @@
       align-items: center;
       justify-content: center;
       gap: 8px;
+      transition: background-color 0.25s var(--ease-suave), transform 0.2s var(--ease-suave);
+    }
+    .btn-instagram:hover {
+      background: #1A1A1A;
+      transform: translateY(-1px);
     }
 
-    /* MODAL PASO INTERMEDIO DE 2 PASOS (OPCIÓN 1) */
+    /* MODAL PASO INTERMEDIO DE 2 PASOS */
     .step-modal {
       position: fixed;
       top: 50%;
       left: 50%;
-      transform: translate(-50%, -50%);
+      transform: translate(-50%, -46%) scale(0.96);
       width: 92%;
       max-width: 420px;
       background: var(--blanco);
       border: 1px solid var(--negro);
       padding: 24px 20px;
       z-index: 280;
-      display: none;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity 0.28s var(--ease-suave), transform 0.28s var(--ease-suave), visibility 0.28s var(--ease-suave);
     }
-    .step-modal.active { display: block; }
+    .step-modal.active {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+      transform: translate(-50%, -50%) scale(1);
+    }
 
     .step-label {
       font-size: 11px;
@@ -560,6 +694,10 @@
       font-weight: 700;
       cursor: pointer;
       margin-bottom: 10px;
+      transition: background-color 0.25s var(--ease-suave), color 0.25s var(--ease-suave), transform 0.18s ease;
+    }
+    .btn-step-copy:active {
+      transform: scale(0.98);
     }
     .btn-step-copy.copied {
       background: #1B5E20;
@@ -626,7 +764,7 @@
       <a href="#destacados"><button class="btn-primary">Ver Catálogo</button></a>
     </div>
     <div class="slide">
-      <div class="badge-nuevo">BAJO PEDIDO</div>
+      <div class="badge-nuevo">ENTREGA INMEDIATA Y BAJO PEDIDO</div>
       <img src="klo logo negro.png" alt="KLO GYM CLUB" class="hero-brand-logo" onerror="this.style.display='none';">
       <h2>Tallas XS a XL</h2>
       <p>Selecciona tu prenda favorita y haz tu pedido directo por Instagram.</p>
@@ -662,8 +800,9 @@
     <div class="product-grid" id="productGrid">
       <div class="product-card" data-category="tops" onclick="openProductModal(0)">
         <div class="product-img-wrap">
-          <img src="Dynamic High Neck Halter Bra color Midnight Black (2).png" alt="Dynamic High Neck Halter Bra">
+          <img src="Dynamic High Neck Halter Bra color Midnight Black (2).png" alt="Dynamic High Neck Halter Bra" loading="lazy">
         </div>
+        <span class="stock-badge stock-inmediato">Entrega inmediata</span>
         <div class="product-title">Dynamic High Neck Halter Bra</div>
         <div class="product-color">Color: Midnight Black</div>
         <div class="product-price">$25.00</div>
@@ -672,8 +811,9 @@
 
       <div class="product-card" data-category="enterizos" onclick="openProductModal(1)">
         <div class="product-img-wrap">
-          <img src="65.png" alt="Impact Short Sleeve One Piece">
+          <img src="65.png" alt="Impact Short Sleeve One Piece" loading="lazy">
         </div>
+        <span class="stock-badge stock-pedido">Bajo pedido</span>
         <div class="product-title">Impact Short Sleeve One Piece</div>
         <div class="product-color">Color: Ivory</div>
         <div class="product-price">$55.00</div>
@@ -699,7 +839,7 @@
         <div class="modal-price" id="modalPrice">$0.00</div>
         <p class="modal-desc" id="modalDesc">Descripción del producto.</p>
         <div class="modal-meta"><strong>Color:</strong> <span id="modalColor"></span></div>
-        <div class="order-note">Tallas disponibles bajo pedido</div>
+        <div class="order-note" id="modalStockBadge">Disponibilidad</div>
 
         <div style="font-size:11px; letter-spacing:2px; margin-bottom:8px; text-transform:uppercase;">Elige tu talla:</div>
         <div class="size-grid" id="modalSizes">
@@ -776,12 +916,14 @@
     const INSTAGRAM_USUARIO = "klo.gymclub";
     const INSTAGRAM_CHAT_URL = "https://ig.me/m/" + INSTAGRAM_USUARIO;
 
+    // Valores de stock admitidos: "entrega_inmediata" | "bajo_pedido"
     const products = [
       {
         name: "Dynamic High Neck Halter Bra",
         price: 25,
         color: "Midnight Black",
         category: "tops",
+        stockType: "entrega_inmediata",
         description: "Top deportivo de cuello alto con tiras cruzadas estilo halter y espalda descubierta. Tejido suave de alta elasticidad que brinda soporte y estiliza la silueta.",
         images: [
           "Dynamic High Neck Halter Bra color Midnight Black (2).png",
@@ -793,6 +935,7 @@
         price: 55,
         color: "Ivory",
         category: "enterizos",
+        stockType: "bajo_pedido",
         description: "Enterizo corto de manga corta con escote pronunciado en la espalda y broche metálico posterior. Ajuste esculpido sin costuras frontales para máxima comodidad.",
         images: [
           "65.png",
@@ -800,6 +943,10 @@
         ]
       }
     ];
+
+    function getStockLabel(stockType) {
+      return stockType === "entrega_inmediata" ? "Entrega inmediata" : "Bajo pedido";
+    }
 
     let cart = [];
     let currentSlide = 0;
@@ -898,10 +1045,15 @@
       document.getElementById('modalQty').textContent = '1';
 
       const p = products[index];
+      const stockLabel = getStockLabel(p.stockType);
       document.getElementById('modalTitle').textContent = p.name;
       document.getElementById('modalPrice').textContent = '$' + p.price.toFixed(2);
       document.getElementById('modalDesc').textContent = p.description;
       document.getElementById('modalColor').textContent = p.color;
+
+      const stockBadge = document.getElementById('modalStockBadge');
+      stockBadge.textContent = stockLabel;
+      stockBadge.className = 'order-note ' + (p.stockType === 'entrega_inmediata' ? 'stock-inmediato' : 'stock-pedido');
 
       setModalPhoto(0);
 
@@ -934,7 +1086,9 @@
       const p = products[activeProductIndex];
       const size = document.querySelector('#modalSizes .size-btn.selected').textContent;
 
-      const existing = cart.find(item => item.name === p.name && item.color === p.color && item.size === size);
+      const existing = cart.find(
+        item => item.name === p.name && item.color === p.color && item.size === size && item.stockType === p.stockType
+      );
       if (existing) {
         existing.cantidad += modalQuantity;
       } else {
@@ -943,6 +1097,7 @@
           color: p.color,
           size: size,
           price: p.price,
+          stockType: p.stockType,
           cantidad: modalQuantity
         });
       }
@@ -978,10 +1133,13 @@
       container.innerHTML = cart.map((item, idx) => {
         const cant = item.cantidad || 1;
         const subtotal = item.price * cant;
+        const stockText = getStockLabel(item.stockType);
+        const stockClass = item.stockType === 'entrega_inmediata' ? 'stock-inmediato' : 'stock-pedido';
         total += subtotal;
         return `
           <div class="cart-item">
             <div>
+              <span class="stock-badge ${stockClass}" style="margin-bottom:4px;">${stockText}</span>
               <div style="font-weight:500;">${item.name}</div>
               <small style="color:#666;">Color: ${item.color} | Talla: ${item.size} — $${subtotal.toFixed(2)}</small>
               <div>
@@ -1010,8 +1168,9 @@
       const items = cart.map(item => {
         const cant = item.cantidad || 1;
         const subtotal = item.price * cant;
+        const stockText = getStockLabel(item.stockType);
         total += subtotal;
-        return `${item.name} (${item.color}) Talla ${item.size} x ${cant} - $${subtotal.toFixed(2)}`;
+        return `${item.name} (${item.color}) Talla ${item.size} x ${cant} [${stockText}] - $${subtotal.toFixed(2)}`;
       });
 
       return `Hola KLO! Quiero pedir:\n${items.join('\n')}\nTOTAL: $${total.toFixed(2)}`;
@@ -1091,7 +1250,6 @@
         status.innerHTML = "Toca <strong>Copiar pedido</strong> y luego ve al chat de KLO para pegarlo.";
       }
 
-      // Intenta copiar una primera vez de inmediato, y queda el botón en 2 pasos bien claro
       copiarTexto(pendingOrderMessage);
 
       document.getElementById('cartDrawer').classList.remove('active');
